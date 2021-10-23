@@ -1,0 +1,22 @@
+###################### TABLAS EXISTENTES ######################
+
+ÁREA REQUIRIENTE: Son los departamentos o especializaciones existentes dentro de la clinica/hospital.
+
+INSUMOS: Es el inventario de materiales que nosotros como clinica/hospital tenemos disponible.
+
+PEDIDOS: Esta tabla es la que nosotros nos vamos apoyar para elaborar los pedidos que algun
+         departamento o especializacion necesite.
+
+DETALLE_PEDIDO: Es la tabla secundaria que va a permitir guardar los metiriales que van a requirir los pedidos,
+		el numero de piezas, siendo estas relacionadas con el identificador de la tabla PEDIDOS.
+
+PEDIDOS_DESPACHADOS: Cuando un proveedor atienda nuestro pedido, esta tabla nos va a permitir identificar
+		     por medio de un estatus, que pedidos ya han sido atendidos, y cuales no, pero apenas se atienda
+		     el pedido, esta tabla, tiene que llenar a otras dos tablas, para poder recibir cuanto le llego en realidad
+		     de cada cosa que se pidió en el pedido.
+
+ALMACEN: Es la tabla primaria que nosotros vamos a poder llenar cuando un proveedor nos atienda un pedido, y posteriormente
+	 identificar cuanto nos llegó de cada cosa.
+
+DETALLE_ALMACEN: Es la tabla secundaria donde se apoya almacen para poder guardar en realidad que materiales y cuanto le llegó de
+		 cada uno.
