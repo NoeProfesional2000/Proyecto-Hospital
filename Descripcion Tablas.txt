@@ -7,7 +7,7 @@ INSUMOS: Es el inventario de materiales que nosotros como clinica/hospital tenem
 PEDIDOS: Esta tabla es la que nosotros nos vamos apoyar para elaborar los pedidos que algun
          departamento o especializacion necesite.
 
-DETALLE_PEDIDO: Es la tabla secundaria que va a permitir guardar los metiriales que van a requirir los pedidos,
+DETALLE_PEDIDO: Es la tabla secundaria que va a permitir guardar los materiales que van a requirir los pedidos,
 		el numero de piezas, siendo estas relacionadas con el identificador de la tabla PEDIDOS.
 
 PEDIDOS_DESPACHADOS: Cuando un proveedor atienda nuestro pedido, esta tabla nos va a permitir identificar
@@ -15,8 +15,8 @@ PEDIDOS_DESPACHADOS: Cuando un proveedor atienda nuestro pedido, esta tabla nos 
 		     el pedido, esta tabla, tiene que llenar a otras dos tablas, para poder recibir cuanto le llego en realidad
 		     de cada cosa que se pidió en el pedido.
 
-ALMACEN: Es la tabla primaria que nosotros vamos a poder llenar cuando un proveedor nos atienda un pedido, y posteriormente
-	 identificar cuanto nos llegó de cada cosa.
+ALMACEN: Es la tabla primaria que nosotros vamos a poder llenar cuando un proveedor nos atienda un pedido, posteriormente
+	 identificar cuanto nos llegó de cada cosa, agregamos un total, porque el pedido no es de a grapa
 
-DETALLE_ALMACEN: Es la tabla secundaria donde se apoya almacen para poder guardar en realidad que materiales y cuanto le llegó de
-		 cada uno.
+DETALLE_ALMACEN: Es la tabla secundaria donde se apoya almacen para poder guardar en realidad que materiales, cuanto le llegó de
+		 cada uno, a que precio, con un subtotal.
