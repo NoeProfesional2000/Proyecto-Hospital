@@ -3,7 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <Funciones.h>
+#include "Funciones.h"
 #include <sys/wait.h>
 #define BUFSIZE 128
 #define TAG 0
