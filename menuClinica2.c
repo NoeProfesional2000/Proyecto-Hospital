@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #define BUFSIZE 128
 #define TAG 0
-
+/*El archivo Funciones.h contiene la conexion hacia la bd, se debe compilar con la ruta hacia postgres*/
 int opc,opcion, opcion2,opcion3,opcion4;
 
 int main(int argc, char *argv[])
