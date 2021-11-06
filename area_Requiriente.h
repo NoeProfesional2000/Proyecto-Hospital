@@ -1,9 +1,10 @@
 /*--- Declaración de funcion para crear un area requiriente, dar de baja y consultar el área por nombre -----*/
-void alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]);
-void baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]);
-void ver_Area_Requiriente(char nombre[40]);
+const char* alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]);
+const char* baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]);
+const char* ver_Area_Requiriente(char nombre[40]);
+char datos_consulta[100];
 
-void alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
+const char* alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
     char tab[50], cad[1020];
     PGconn *conn;
     PGresult *resultado;
@@ -17,17 +18,25 @@ void alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
      sprintf(cad, "SELECT Requiriente('%d','%s','%s');",1,nombre_Area,descripcion);
 	 resultado = PQexec(conn, cad);
       if(PQntuples(resultado) == 1){
-			printf("\t\t**** ALTA EXITOSA!! ****\n");
+	 for (i = 0; i < PQntuples(resultado); i++){
+                for (j = 0; j < PQnfields(resultado); j++){
+	        	 printf("\t%s\t    ",PQgetvalue(resultado,i,j));
+	        	 strcat(datos_consulta,PQgetvalue(resultado,i,j));
+	        	 sprintf(datos_consulta,"%s",PQgetvalue(resultado,i,j));
+		        }
+		    puts("\n");
+		    }
+		    return datos_consulta;
 		}else{
-			printf("\t\t***Error en el servidor***\n");
+			return "\t\t***Error en el servidor***\n";
 		}
     }else{
-    	puts("\n***Error en el sistema***\n");
+    	return "\n***Error en el sistema***\n";
     }
 	PQfinish(conn);
 } //Cierra función de Alta área requiriente
 
-void baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
+const char* baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
     char tab[50], cad[1020];
     PGconn *conn;
     PGresult *resultado;
@@ -42,17 +51,26 @@ void baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
      sprintf(cad, "SELECT Requiriente('%d','%s','%s');",2,nombre_Area,descripcion);
 	 resultado = PQexec(conn, cad);
       if(PQntuples(resultado) == 1){
-			printf("\t\t**** BAJA EXITOSA!! ****\n");
+       // ciclos para imprimir filany columna de datos. //
+	for (i = 0; i < PQntuples(resultado); i++){
+                for (j = 0; j < PQnfields(resultado); j++){
+	        	 printf("\t%s\t    ",PQgetvalue(resultado,i,j));
+	        	 strcat(datos_consulta,PQgetvalue(resultado,i,j));
+	        	 sprintf(datos_consulta,"%s",PQgetvalue(resultado,i,j));
+		        }
+		         puts("\n");
+		    }
+		    return datos_consulta;
 		}else{
-			printf("\t\t***Error en el servidor***\n");
+			return "\t\t***Error en el servidor***\n";
 		}
     }else{
-    	puts("\n***Error en el sistema***\n");
+    	return "\n***Error en el sistema***\n";
     }
 	PQfinish(conn);
 }//Cierra función de Baja área requiriente
 
-void ver_Area_Requiriente(char nombre[40]){
+const char* ver_Area_Requiriente(char nombre[40]){
 
   char tab[50], cad[1020];
   PGconn *conn;
@@ -73,17 +91,19 @@ void ver_Area_Requiriente(char nombre[40]){
     puts("\n\t\t No existe el Area o se ha dado de baja\n\n");
     // Si obtiene resultado se muestra por medio de un ciclo for. //
      }else if(PQntuples(PQexec(conn, cad)) == 1){
-        	puts("------------------------------------------------------------------\n");
-     	puts("\t ID                 NOMBRE                       DESCRIPCION              ESTATUS\n\n");
-      for (i = 0; i < PQntuples(resultado); i++){ 
-            for (j = 0; j < PQnfields(resultado); j++){
-	    	 printf("\t%s\t    ",PQgetvalue(resultado,i,j));
-		}
-		puts("\n");
-		}
-	      puts("---------------------------------------------------------------------\n");
-    
+
+     	puts("\t ID                 NOMBRE                DESCRIPCION              ESTATUS\n\n");
+      for (i = 0; i < PQntuples(resultado); i++){
+       // ciclos para imprimir fila y columna de datos. //
+        for (j = 0; j < PQnfields(resultado); j++){
+            strcat(datos_consulta,PQgetvalue(resultado,i,j));
+            strcat(datos_consulta,"\t\t");
+            printf("\t  [%s]",PQgetvalue(resultado,i,j));
+	}
+	    puts("\n");
+      }
     } //else if existe resultado de consulta
+    return datos_consulta;
     }else{
     	puts("\t\t***Error en el sistema***\n");
     }

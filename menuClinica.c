@@ -231,8 +231,8 @@ char nombre_Area[40], descripcion[40];
       break;
     }
   }while(opc != 5);
-}
-
+}// FIn de main //
+// Funcion para Menu principal de Área requiriente //
 void menuAreaRequiriente(void){
 	puts("\n\t\t**************** AREA REQUIRIENTE ***************\n\n");
 	puts("\t1.- Alta de Area Requiriente\n");
