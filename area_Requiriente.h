@@ -83,7 +83,7 @@ const char* ver_Area_Requiriente(char nombre[40]){
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
     // Se realiza consulta de datos de acuerdo al nombre del área requiriente. //
-    sprintf(cad, "select id_area_requiriente, nombre_area, descripcion, estatus from area_requiriente where nombre_area = '%s' and estatus = 1;", nombre);
+    sprintf(cad, "select id_area_requiriente, nombre_area, descripcion, estatus from area_requiriente where UPPER(nombre_area) = UPPER('%s') and estatus = 1;", nombre);
      resultado = PQexec(conn, cad);
      //Si no se obtiene ningún resultado, se envía un mensaje al usuario. //
     if(PQntuples(PQexec(conn, cad)) == 0){

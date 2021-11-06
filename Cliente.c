@@ -121,7 +121,7 @@ int main(int argc, char *argv[]){
 	                             write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
                                      // Lee datos enviaos desde servidor //  
 	                             read(FileDescriptor,cad,sizeof(cad));
-	                             printf("Servidor:%s\n",cad);
+	                             printf("\n\tServidor:%s\n",cad);
 	                 //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
 	                             Ejecucion_Final(begin_alta.tv_sec,begin_alta.tv_usec);
 	                             printf("\n\t\t\t  Presione '0' para continuar... ");
@@ -134,8 +134,6 @@ int main(int argc, char *argv[]){
                                     // Se pide nombre y descripcion de área //
                                     printf("\tIngrese el nombre: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", area_requiriente.nombre_Area);
-                                    printf("\tIngrese una descripcion del Area: ");
-	                            scanf(" %2048[0-9a-zA-Z ]s", area_requiriente.descripcion);
 	                            // Se decara tiempo de inicio //
                                      struct timeval begin_baja;
                                      gettimeofday(&begin_baja, 0);
@@ -145,7 +143,7 @@ int main(int argc, char *argv[]){
 	                            write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
 	                            // Lee datos enviaos desde servidor //    
 	                            read(FileDescriptor,cad1,sizeof(cad1));
-	                            printf("Servidor:%s\n",cad1);
+	                            printf("\n\tServidor:%s\n",cad1);
 	                             //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
 	                             Ejecucion_Final(begin_baja.tv_sec,begin_baja.tv_usec);
 	                             printf("\n\t\t\t  Presione '0' para continuar... ");

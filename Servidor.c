@@ -95,7 +95,7 @@ int main(){
                         system("clear");
                         printf("\n\t--------------- BAJA AREA REQUIRIENTE --------------\n");
                         printf("\n\tNombre: %s",area_requiriente.nombre_Area);
-                        printf("\n\tDescripcion: %s",area_requiriente.descripcion);
+                        sprintf(cad1, "%s", baja_Area_Requiriente(area_requiriente.nombre_Area, "descrip"));
                         sprintf(cad1,"%s", baja_Area_Requiriente(area_requiriente.nombre_Area, area_requiriente.descripcion));
                         write(fd2,cad1, sizeof(cad1));
                     break;
