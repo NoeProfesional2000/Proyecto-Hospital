@@ -11,7 +11,7 @@ const char* alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
     int i,j;
 // Se realiza la conexión e inserción de datos requeridos para dar de alta al Área Requiriente. //
 	puts("\n\t\t ------------ALTA DE AREA REQUIRIENTE------------\n\n");
-	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","123");
+	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
 // Se conecta con el PL para poder realizar la inserción y validaciones al realizar la operación. //
@@ -43,7 +43,7 @@ const char* baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
     int i,j;
 // Conexión a base de datos. //
 	puts("\n\t\t ------------BAJA DE AREA REQUIRIENTE------------\n\n");
-	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","123");
+	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
   // Se realiza la baja del Área Requiriente, se cambia el estatus a 0. //  
@@ -79,7 +79,7 @@ const char* ver_Area_Requiriente(char nombre[40]){
   int i,j;
   
    puts("\n\t\t --------Consulta de Area Requiriente------- \n\n");
-   conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","123");
+   conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
     // Se realiza consulta de datos de acuerdo al nombre del área requiriente. //

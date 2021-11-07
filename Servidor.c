@@ -9,6 +9,7 @@
 #include <libpq-fe.h>
 #include <fcntl.h>
 #include "area_Requiriente.h"
+#include "almacen.h"
 
 #define PORT 3550
 #define BACKLOG 2 /* El número de conexiones permitidas */
@@ -19,6 +20,13 @@ struct area_requiriente{
     char nombre_Area[40];
     char descripcion[80];
     char Mensaje[50];
+};
+
+struct almacen{
+    char opcion_secundaria[5];
+    char nombreMaterial[40];
+    char areaRequiriente[40];
+    char stock[40];
 };
 
 
@@ -32,6 +40,7 @@ int main(){
 
     /*Uso del struct*/
     struct area_requiriente area_requiriente;
+    struct almacen almacen;
 
    /*Variables normales*/
    char opc[5];
@@ -77,6 +86,28 @@ int main(){
         switch(atoi(opc)){
             case 1:
                 /*Switch de materiales*/
+            read(fd2,&almacen,sizeof(almacen));
+                switch(atoi(almacen.opcion_secundaria)){
+                     case 2:
+                     // Se limpia pantalla, obtiene datos para Baja de Área, envía mensaje de confirmación de ALta //
+                        system("clear");
+                        printf("\n\t--------------- ALTA DE MATERIAL --------------\n");
+                        printf("\n\tArea: %s",almacen.areaRequiriente);
+                        printf("\n\tDescripcion: %s",almacen.nombreMaterial);
+                        sprintf(cad,"%s", buscar_area_requiriente(almacen.areaRequiriente, almacen.nombreMaterial));
+                        write(fd2,cad, sizeof(cad));
+                    break;
+
+                    case 4:
+                     // Se limpia pantalla, obtiene datos para Baja de Área, envía mensaje de confirmación de ALta //
+                        system("clear");
+                        printf("\n\t--------------- ENTRADA INVENTARIO --------------\n");
+                        printf("\n\tNombre Material: %s",almacen.nombreMaterial);
+                        printf("\n\tStock: %s",almacen.stock);
+                        sprintf(cad,"%s", buscar_insumo(almacen.nombreMaterial, atoi(almacen.stock)));
+                        write(fd2,cad, sizeof(cad));
+                    break;
+                }
             break;
             case 2:
                 read(fd2,&area_requiriente,sizeof(area_requiriente));
@@ -124,4 +155,4 @@ int main(){
         close(fd2);
     }
     close(fd);
-}
+}   
