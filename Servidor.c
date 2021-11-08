@@ -27,8 +27,12 @@ struct almacen{
     char nombreMaterial[40];
     char areaRequiriente[40];
     char stock[40];
+    char validar_entrada[80];
+    /*para la parte de pedidos*/
+    char insumo[5];
+    char piezas[5];
+    char descripcion[100];
 };
-
 
 int main(){
 
@@ -43,7 +47,7 @@ int main(){
     struct almacen almacen;
 
    /*Variables normales*/
-   char opc[5];
+   char opc[5],cadena[1020];
 
     //Viene la parte para trabajar con sockets
     if ((fd=socket(AF_INET, SOCK_STREAM, 0)) == -1 ) {
@@ -86,10 +90,25 @@ int main(){
         switch(atoi(opc)){
             case 1:
                 /*Switch de materiales*/
-            read(fd2,&almacen,sizeof(almacen));
+                read(fd2,&almacen,sizeof(almacen));
                 switch(atoi(almacen.opcion_secundaria)){
+                     case 1:
+                      // Se limpia pantalla, obtiene datos para realizar el pedido //
+                      system("clear");
+                      printf("\n\t--------------- REALIZAR PEDIDO --------------\n");
+                      if(strstr(almacen.validar_entrada,"areas_requiriente")){
+                        bzero(cadena,sizeof(cadena));
+                        sprintf(cadena,"%s",buscar_areas_requiriente());
+                        write(fd2,cadena,sizeof(cadena));
+                      }else{
+                        printf("\n\tArea: %s",almacen.areaRequiriente);
+                        printf("\n\tDescripcion: %s",almacen.descripcion);
+                        sprintf(cad,"%s","VAS BIEN CRACK");
+                        write(fd2,cad, sizeof(cad));
+                      }
+                     break;
                      case 2:
-                     // Se limpia pantalla, obtiene datos para Baja de Área, envía mensaje de confirmación de ALta //
+                     // Se limpia pantalla, obtiene datos dar de alta un material //
                         system("clear");
                         printf("\n\t--------------- ALTA DE MATERIAL --------------\n");
                         printf("\n\tArea: %s",almacen.areaRequiriente);
@@ -99,7 +118,7 @@ int main(){
                     break;
 
                     case 4:
-                     // Se limpia pantalla, obtiene datos para Baja de Área, envía mensaje de confirmación de ALta //
+                     // Se limpia pantalla, obtiene datos ingresar la entrada de un inventario //
                         system("clear");
                         printf("\n\t--------------- ENTRADA INVENTARIO --------------\n");
                         printf("\n\tNombre Material: %s",almacen.nombreMaterial);

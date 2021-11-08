@@ -20,11 +20,17 @@ struct area_requiriente{
     char descripcion[80];
     char Mensaje[50];
 };
+
 struct almacen{
     char opcion_secundaria[5];
     char nombreMaterial[40];
     char areaRequiriente[40];
     char stock[40];
+    char validar_entrada[80];
+    /*para la parte de pedidos*/
+    char insumo[5];
+    char piezas[5];
+    char descripcion[100];
 };
 
 int main(int argc, char *argv[]){
@@ -38,7 +44,7 @@ int main(int argc, char *argv[]){
     struct almacen almacen;
 
     /*Variables normales*/
-    char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100];
+    char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800];
     struct timeval tiempo_general;
 
     if (argc !=2) {
@@ -76,6 +82,40 @@ int main(int argc, char *argv[]){
                             sprintf(almacen.opcion_secundaria,"%s",opcion);
                             switch(atoi(opcion)){
                                 case 1:
+                                    system("clear");// Limpiar pantalla //
+                                    // Se decara tiempo de inicio //
+                                    struct timeval begin_pedido;
+                                    gettimeofday(&begin_pedido, 0);
+                                    // Escribe y envía datos a servidor //  
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "areas_requiriente");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    //traemos datos desde el servidor
+                                    bzero(cadena,sizeof(cadena));
+                                    read(FileDescriptor,cadena,sizeof(cadena));
+                                    //mostramos todas las areas que existen //
+                                    printf("\n\tID\t\tAREA\n\n");
+                                    printf("\n\t%s",cadena);
+                                    
+                                    //pedimos los datos para hacer la insercion//
+                                    printf("-----------------------------------------------------------");
+                                    printf("\tIngrese el id del area: ");
+                                    scanf(" %2048[0-9a-zA-Z ]s", almacen.areaRequiriente);
+                                    printf("\tIngrese una descripcion: ");
+                                    scanf(" %2048[0-9a-zA-Z ]s", almacen.descripcion);
+                                    // abrimos otra conexion al servidor //  
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "sin_mensaje");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                     // Lee datos enviaos desde servidor //  
+                                    read(FileDescriptor,cad,sizeof(cad));
+                                    printf("\n\tServidor:%s\n",cad);
+                                    //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
+                                    Ejecucion_Final(begin_pedido.tv_sec,begin_pedido.tv_usec);
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");                    
+                                    while(getchar() != '0');      
                                 break;
                                 case 2:
                                     system("clear");// Limpiar pantalla //
