@@ -31,6 +31,7 @@ struct almacen{
     char insumo[5];
     char piezas[5];
     char descripcion[100];
+    char consulta[1020];
 };
 
 int main(int argc, char *argv[]){
@@ -44,8 +45,9 @@ int main(int argc, char *argv[]){
     struct almacen almacen;
 
     /*Variables normales*/
-    char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800];
+    char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800],cadenaApoyo[500];
     struct timeval tiempo_general;
+    int cantidad = 0;
 
     if (argc !=2) {
         /*Si en consola no ingresas la IP o ingresas algo de mas, aparecerà esto*/
@@ -91,14 +93,14 @@ int main(int argc, char *argv[]){
                                     sprintf(almacen.validar_entrada, "areas_requiriente");
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                    //traemos datos desde el servidor
+                                    //traemos datos desde el servidor //
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
                                     //mostramos todas las areas que existen //
                                     printf("\n\tID\tAREA\n");
                                     printf("%s\n",cadena);
 
-                                    //pedimos los datos para hacer la insercion//
+                                    //pedimos los datos para hacer la insercion en pedidos//
                                     printf("-----------------------------------------------------------");
                                     printf("\n\tIngrese el id del area: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.areaRequiriente);
@@ -106,10 +108,42 @@ int main(int argc, char *argv[]){
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.descripcion);
                                     // abrimos otra conexion al servidor //  
                                     FileDescriptor = Conexion_Socket(server);
-                                    sprintf(almacen.validar_entrada, "sin_mensaje");
+                                    sprintf(almacen.validar_entrada, "insumos");
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                     // Lee datos enviaos desde servidor //  
+                                    bzero(cadena,sizeof(cadena));
+                                    read(FileDescriptor,cadena,sizeof(cadena));
+                                    //traemos todo los insumos que correspondan a esa area //
+                                    printf("\n\tID\tPRODUCTO\n");
+                                    printf("%s\n",cadena);
+                                    //pedimos los datos para hacer la insercion en detalle pedidos//
+                                    printf("-----------------------------------------------------------");
+                                    //Asignado primera parte...
+                                    sprintf(almacen.consulta,"INSERT INTO detalle_pedidos(id_pedidos, id_insumos,piezas) VALUES ");
+                                    printf("Cuantos materiales va a ingresar: ");
+                                    scanf("%d",&cantidad);
+
+                                    for(int i = 0; i < cantidad; i++){                      
+                                        printf("\tIngrese el id del material: ");
+                                        scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
+                                        printf("\tIngrese la cantidad del material: ");
+                                        scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
+
+                                        sprintf(cadenaApoyo,"(%d,%d,%d)",1,atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                        strcat(almacen.consulta,cadenaApoyo);
+
+                                        if(i != (cantidad-1)){
+                                            strcat(almacen.consulta,",");
+                                        }else{
+                                            strcat(almacen.consulta,";");
+                                        }
+                                        memset(cadenaApoyo,0,sizeof(cadenaApoyo));
+                                    }
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "diferente");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    // Lee datos enviaos desde servidor //  
                                     read(FileDescriptor,cad,sizeof(cad));
                                     printf("\n\tServidor:%s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
@@ -146,7 +180,7 @@ int main(int argc, char *argv[]){
                                 break;
                                 case 4:
 
-                                 system("clear");// Limpiar pantalla //
+                                    system("clear");// Limpiar pantalla //
                                      // Se pide nombre y descripcion de área //
                                     printf("\tIngrese el nombre del material: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);

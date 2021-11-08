@@ -32,6 +32,7 @@ struct almacen{
     char insumo[5];
     char piezas[5];
     char descripcion[100];
+    char consulta[1020];
 };
 
 int main(){
@@ -100,9 +101,14 @@ int main(){
                         bzero(cadena,sizeof(cadena));
                         sprintf(cadena,"%s",buscar_areas_requiriente());
                         write(fd2,cadena,sizeof(cadena));
+                      }else if(strstr(almacen.validar_entrada,"insumos")){
+                        bzero(cadena,sizeof(cadena));
+                        sprintf(cadena,"%s",buscar_todos_los_insumos(atoi(almacen.areaRequiriente)));
+                        write(fd2,cadena,sizeof(cadena));
                       }else{
                         printf("\n\tArea: %s",almacen.areaRequiriente);
                         printf("\n\tDescripcion: %s",almacen.descripcion);
+                        printf("\n\tConsulta: %s",almacen.consulta);
                         sprintf(cad,"%s","VAS BIEN CRACK");
                         write(fd2,cad, sizeof(cad));
                       }
