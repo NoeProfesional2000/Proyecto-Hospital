@@ -227,7 +227,7 @@ const char* alta_pedido(int id_area_requiriente, char descripcion[100]){
     conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
-		sprintf(insercion, "INSERT INTO pedidos(id_area_requiriente,descripcion,fecha_creacion,hora_creacion) VALUES ('%d','%s',SELECT CURRENT_DATE(),SELECT CURRENT_TIME())",id_area_requiriente,descripcion);
+		sprintf(insercion, "INSERT INTO pedidos(id_area_requiriente,descripcion,fecha_creacion,hora_creacion) VALUES ('%d','%s',current_date,current_time)",id_area_requiriente,descripcion);
 	    resultado = PQexec(conn, insercion);
 
      	if(PQresultStatus(resultado) == PGRES_COMMAND_OK){
@@ -253,7 +253,7 @@ const char* buscar_ultimo_pedido(){
     conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
     if(PQstatus(conn) != CONNECTION_BAD)
     {
-     sprintf(consulta, "SELECT currval(pg_get_serial_sequence('pedidos','id_pedidos'))");
+     sprintf(consulta, "SELECT MAX(id_pedidos) FROM PEDIDOS");
      resultado = PQexec(conn, consulta);
         if(resultado != NULL){
             puts("\n-------------------------------------------\n");

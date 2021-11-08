@@ -37,3 +37,29 @@ EXCEPTION
     COMMIT;
 END;
 $BODY$ LANGUAGE 'plpgsql';
+
+
+-- CREANDO EL PL DE INSERCION.
+DROP FUNCTION Insertar_Detalle(id INTEGER, cadena_restante VARCHAR);
+CREATE OR REPLACE FUNCTION Insertar_Detalle(id INTEGER, cadena_restante VARCHAR) RETURNS VARCHAR AS $BODY$
+DECLARE
+    fecha_insercion DATE := (SELECT CURRENT_DATE);
+    hora_insercion TIME := (SELECT CURRENT_TIME);
+BEGIN
+    -- INSERTAMOS EN DETALLE PEDIDO
+    EXECUTE 'INSERT INTO detalle_pedidos(id_pedidos, id_insumos,piezas) VALUES ' || cadena_restante;
+
+    -- INSERTAMOS EN PEDIDOS DESPACHADOS
+    INSERT INTO pedidos_despachados(id_pedidos,estatus,fecha_recibido,hora_recibido) VALUES (id,'pendiente',fecha_insercion,hora_insercion);
+    RETURN 'PEDIDO DADO DE ALTA CORRECTAMENTE';
+EXCEPTION
+    WHEN SQLSTATE '23503' THEN
+        DELETE FROM pedidos WHERE id_pedidos = id;
+        RETURN 'ERROR, ALGO NO COINCIDE';
+    WHEN SQLSTATE '42830' THEN
+        DELETE FROM pedidos WHERE id_pedidos = id;
+        RETURN 'ERROR, ALGO NO COINCIDE';
+    ROLLBACK;
+    COMMIT;
+END;
+$BODY$ LANGUAGE 'plpgsql';

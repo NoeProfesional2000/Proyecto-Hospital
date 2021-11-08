@@ -107,11 +107,11 @@ int main(){
                         sprintf(cadena,"%s",alta_pedido(atoi(almacen.areaRequiriente),almacen.descripcion));
                         write(fd2,cadena,sizeof(cadena));
                       }else if(strstr(almacen.validar_entrada,"ultimo")){
-                        sprintf(cad,"%s", buscar_ultimo_pedido());
-                        write(fd2,cad, sizeof(cad));
+                        sprintf(almacen.ultimo_pedido,"%s", buscar_ultimo_pedido());
+                        write(fd2,&almacen, sizeof(almacen));
                       }else{
                         printf("\n\tConsulta: %s",almacen.consulta);
-                        sprintf(cad,"%s","VAS BIEN CRACK");
+                        sprintf(cad,"%s",SELECT insertar_detalle(atoi(almacen.ultimo_pedido),almacen.consulta));
                         write(fd2,cad, sizeof(cad));
                       }
                      break;

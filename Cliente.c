@@ -125,7 +125,7 @@ int main(int argc, char *argv[]){
                                     sprintf(almacen.validar_entrada, "ultimo");
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                    read(FileDescriptor,cad,sizeof(cad));
+                                    read(FileDescriptor,&almacen,sizeof(almacen));
 
                                     //pedimos los datos para hacer la insercion en detalle pedidos//
                                     printf("-----------------------------------------------------------");
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
                                         printf("\tIngrese la cantidad del material: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
 
-                                        sprintf(cadenaApoyo,"(%d,%d,%d)",cad,atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                        sprintf(cadenaApoyo,"(%d,%d,%d)",atoi(almacen.ultimo_pedido),atoi(almacen.nombreMaterial),atoi(almacen.stock));
                                         strcat(almacen.consulta,cadenaApoyo);
 
                                         if(i != (cantidad-1)){
