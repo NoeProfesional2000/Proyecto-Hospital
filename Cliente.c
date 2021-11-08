@@ -32,6 +32,7 @@ struct almacen{
     char piezas[5];
     char descripcion[100];
     char consulta[1020];
+    char ultimo_pedido[5];
 };
 
 int main(int argc, char *argv[]){
@@ -97,6 +98,7 @@ int main(int argc, char *argv[]){
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
                                     //mostramos todas las areas que existen //
+                                    printf("-----------------------------------------------------------");
                                     printf("\n\tID\tAREA\n");
                                     printf("%s\n",cadena);
 
@@ -114,13 +116,21 @@ int main(int argc, char *argv[]){
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
                                     //traemos todo los insumos que correspondan a esa area //
+                                    printf("-----------------------------------------------------------");
                                     printf("\n\tID\tPRODUCTO\n");
                                     printf("%s\n",cadena);
+
+                                    //Antes de pedir vamos a traer el id del pedido insertado//
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "ultimo");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    read(FileDescriptor,cad,sizeof(cad));
+
                                     //pedimos los datos para hacer la insercion en detalle pedidos//
                                     printf("-----------------------------------------------------------");
                                     //Asignado primera parte...
-                                    sprintf(almacen.consulta,"INSERT INTO detalle_pedidos(id_pedidos, id_insumos,piezas) VALUES ");
-                                    printf("Cuantos materiales va a ingresar: ");
+                                    printf("\nCuantos materiales va a ingresar: ");
                                     scanf("%d",&cantidad);
 
                                     for(int i = 0; i < cantidad; i++){                      
@@ -129,7 +139,7 @@ int main(int argc, char *argv[]){
                                         printf("\tIngrese la cantidad del material: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
 
-                                        sprintf(cadenaApoyo,"(%d,%d,%d)",1,atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                        sprintf(cadenaApoyo,"(%d,%d,%d)",cad,atoi(almacen.nombreMaterial),atoi(almacen.stock));
                                         strcat(almacen.consulta,cadenaApoyo);
 
                                         if(i != (cantidad-1)){
