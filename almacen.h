@@ -160,15 +160,14 @@ const char* buscar_areas_requiriente(){
 			puts("-------------------------------------------\n");
 		}
 		if(PQresultStatus(resultado) != PGRES_TUPLES_OK){
-            return "----Error en el servidor----";
+            sprintf(todo,"----Error en el servidor----");
 		}else if(PQntuples(resultado) == 0){
-            return "----No hay areas requeridas----";
-        }
-        else if(PQntuples(resultado) > 0){
-            return todo;     
+            sprintf(todo,"----No hay areas requeridas----");
+        }else if(PQntuples(resultado) > 0){
+            return todo;
         }
     }else{
-        return "----Error en el servidor----";
+        sprintf(todo,"----Error en el servidor----");
     	
     }
 	PQfinish(conn);
