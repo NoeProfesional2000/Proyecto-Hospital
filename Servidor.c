@@ -111,7 +111,7 @@ int main(){
                         write(fd2,&almacen, sizeof(almacen));
                       }else{
                         printf("\n\tConsulta: %s",almacen.consulta);
-                        sprintf(cad,"%s",SELECT insertar_detalle(atoi(almacen.ultimo_pedido),almacen.consulta));
+                        sprintf(cad,"%s",alta_detalle_pedido(atoi(almacen.ultimo_pedido),almacen.consulta));
                         write(fd2,cad, sizeof(cad));
                       }
                      break;
