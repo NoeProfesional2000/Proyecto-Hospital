@@ -97,12 +97,12 @@ int main(int argc, char *argv[]){
                                     //mostramos todas las areas que existen //
                                     printf("\n\tID\t\tAREA\n\n");
                                     printf("\n\t%s",cadena);
-                                    
+
                                     //pedimos los datos para hacer la insercion//
                                     printf("-----------------------------------------------------------");
-                                    printf("\tIngrese el id del area: ");
+                                    printf("\n\tIngrese el id del area: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.areaRequiriente);
-                                    printf("\tIngrese una descripcion: ");
+                                    printf("\n\tIngrese una descripcion: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.descripcion);
                                     // abrimos otra conexion al servidor //  
                                     FileDescriptor = Conexion_Socket(server);

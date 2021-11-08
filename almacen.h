@@ -160,14 +160,16 @@ const char* buscar_areas_requiriente(){
 			puts("-------------------------------------------\n");
 		}
 		if(PQresultStatus(resultado) != PGRES_TUPLES_OK){
-            sprintf(todo,"----Error en el servidor----");
+            return "----Error en el servidor----";
 		}else if(PQntuples(resultado) == 0){
-            sprintf(todo,"----No existe la matricula----");
+            return "----No hay areas requeridas----";
+        }
+        else if(PQntuples(resultado) > 0){
+            return todo;     
         }
     }else{
-        sprintf(todo,"----Error en el servidor----");
+        return "----Error en el servidor----";
     	
     }
-    return todo;
 	PQfinish(conn);
 }
