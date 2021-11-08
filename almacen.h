@@ -3,6 +3,7 @@ const char* buscar_area_requiriente(char nombre[100], char nombre_producto[100])
 const char* actualizar_entrada_inventario(int id, int cantidad);
 const char* buscar_insumo(char nombre[100], int cantidad);
 const char* buscar_areas_requiriente();
+char todo[1020];
 
 // Se realiza la conexi�n e inserci�n de datos para dar de alta un material //
 const char* alta_material(int id_area_requiriente, char nombre_producto[100]){
@@ -135,7 +136,6 @@ const char* buscar_insumo(char nombre[100], int cantidad){
 // Se realiza la conexi�n y busqueda de toda las areas requiriente en existencia //
 const char* buscar_areas_requiriente(){
     char consulta[1020];
-    char todo[1020];
     bzero(todo,sizeof(todo));
 	PGconn *conn;
 	PGresult *resultado;
@@ -151,10 +151,11 @@ const char* buscar_areas_requiriente(){
 			puts("\n-------------------------------------------\n");
 	        for (i = 0; i < PQntuples(resultado); i++){
 		        for (j = 0; j < PQnfields(resultado); j++){
-                  strcat(todo,PQgetvalue(resultado,i,j));
                   strcat(todo,"\t");
+                  strcat(todo,PQgetvalue(resultado,i,j));
                   printf("  [%s]",PQgetvalue(resultado,i,j));
 				}
+                strcat(todo,"\n");
 				puts("\n");
 			}
 			puts("-------------------------------------------\n");
@@ -163,12 +164,11 @@ const char* buscar_areas_requiriente(){
             sprintf(todo,"----Error en el servidor----");
 		}else if(PQntuples(resultado) == 0){
             sprintf(todo,"----No hay areas requeridas----");
-        }else if(PQntuples(resultado) > 0){
-            return todo;
         }
     }else{
         sprintf(todo,"----Error en el servidor----");
     	
     }
+    return todo;
 	PQfinish(conn);
 }

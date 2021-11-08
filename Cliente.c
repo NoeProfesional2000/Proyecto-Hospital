@@ -95,8 +95,8 @@ int main(int argc, char *argv[]){
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
                                     //mostramos todas las areas que existen //
-                                    printf("\n\tID\t\tAREA\n\n");
-                                    printf("\n\t%s",cadena);
+                                    printf("\n\tID\tAREA\n");
+                                    printf("%s\n",cadena);
 
                                     //pedimos los datos para hacer la insercion//
                                     printf("-----------------------------------------------------------");
