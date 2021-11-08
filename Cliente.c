@@ -132,7 +132,9 @@ int main(int argc, char *argv[]){
                                     //Asignado primera parte...
                                     printf("\nCuantos materiales va a ingresar: ");
                                     scanf("%d",&cantidad);
-
+                                    
+                                    bzero(cadenaApoyo,sizeof(cadenaApoyo));
+                                    bzero(almacen.consulta,sizeof(almacen.consulta));
                                     for(int i = 0; i < cantidad; i++){                      
                                         printf("\tIngrese el id del material: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
