@@ -33,6 +33,7 @@ struct almacen{
     char descripcion[100];
     char consulta[1020];
     char ultimo_pedido[5];
+    char pedido_despachado[5];
 };
 
 int main(int argc, char *argv[]){
@@ -89,6 +90,7 @@ int main(int argc, char *argv[]){
                                     // Se decara tiempo de inicio //
                                     struct timeval begin_pedido;
                                     gettimeofday(&begin_pedido, 0);
+                                    
                                     // Escribe y envía datos a servidor //  
                                     FileDescriptor = Conexion_Socket(server);
                                     sprintf(almacen.validar_entrada, "areas_requiriente");
@@ -189,6 +191,43 @@ int main(int argc, char *argv[]){
 
                                 break;
                                 case 3:
+                                    system("clear");
+                                    struct timeval begin_pedido_pendiente;
+                                    gettimeofday(&begin_pedido_pendiente, 0);
+                                    // Escribe y envía datos a servidor //  
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "pedido_despachado");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    //traemos datos desde el servidor //
+                                    bzero(cadena,sizeof(cadena));
+                                    read(FileDescriptor,cadena,sizeof(cadena));
+                                    //mostramos todas las areas que existen //
+                                    printf("-----------------------------------------------------------");
+                                    printf("\n\tID\tDescripcion\tFecha\tHora\n");
+                                    printf("%s\n",cadena);
+
+                                     //pedimos los datos para hacer la insercion en pedidos//
+                                    printf("-----------------------------------------------------------");
+                                    printf("\n\tIngrese el id del pedido que desea levantar: ");
+                                    scanf(" %2048[0-9a-zA-Z ]s", almacen.pedido_despachado);
+                                   
+                                    // abrimos otra conexion al servidor //  
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "despachar");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    bzero(cadena,sizeof(cadena));
+                                    read(FileDescriptor,cadena,sizeof(cadena));
+                                    //traemos todo los insumos que correspondan a esa area //
+                                    printf("-----------------------------------------------------------");
+                                    printf("\n\tID\tPIEZAS\tPRODUCTO\n");
+                                    printf("%s\n",cadena);
+
+                                    Ejecucion_Final(begin_pedido_pendiente.tv_sec,begin_pedido_pendiente.tv_usec);
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");                    
+                                    while(getchar() != '0');
+
                                 break;
                                 case 4:
 

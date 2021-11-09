@@ -34,6 +34,7 @@ struct almacen{
     char descripcion[100];
     char consulta[1020];
     char ultimo_pedido[5];
+    char pedido_despachado[5];
 };
 
 int main(){
@@ -49,7 +50,7 @@ int main(){
     struct almacen almacen;
 
    /*Variables normales*/
-   char opc[5],cadena[1020];
+   char opc[5],cadena[1020], pedido_despachado[5];
 
     //Viene la parte para trabajar con sockets
     if ((fd=socket(AF_INET, SOCK_STREAM, 0)) == -1 ) {
@@ -123,6 +124,22 @@ int main(){
                         printf("\n\tDescripcion: %s",almacen.nombreMaterial);
                         sprintf(cad,"%s", buscar_area_requiriente(almacen.areaRequiriente, almacen.nombreMaterial));
                         write(fd2,cad, sizeof(cad));
+                    break;
+
+                    case 3:
+                        system("clear");
+                        printf("\n\t--------------- LEVANTAR PEDIDO --------------\n");
+                        if(strstr(almacen.validar_entrada,"pedido_despachado")){
+                        bzero(cadena,sizeof(cadena));
+                        sprintf(cadena,"%s",buscar_pedido_pendiente());
+                        write(fd2,cadena,sizeof(cadena));  
+                        }else if(strstr(almacen.validar_entrada,"despachar")){
+                        bzero(cadena,sizeof(cadena));
+                        printf("\n\tvalor: %s",almacen.pedido_despachado);
+                        sprintf(cadena,"%s", buscar_insumo_despachados(atoi(almacen.pedido_despachado)));
+                        write(fd2,cadena,sizeof(cadena));
+                        }
+
                     break;
 
                     case 4:
