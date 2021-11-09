@@ -45,26 +45,16 @@ CREATE TABLE pedidos_despachados(
 	id_pedidos_despachados SERIAL NOT NULL,
 	PRIMARY KEY(id_pedidos_despachados),
 	id_pedidos INTEGER REFERENCES pedidos,
-	estatus INTEGER,
+	estatus VARCHAR,
 	fecha_recibido DATE,
 	hora_recibido TIME
 );
 
---Almacen
+--Detalle Almacen
 CREATE TABLE almacen(
 	id_almacen SERIAL NOT NULL,
 	PRIMARY KEY(id_almacen),
 	id_pedidos_despachados INTEGER REFERENCES pedidos_despachados,
-	total REAL
-);
-
---Detalle Almacen
-CREATE TABLE detalle_almacen(
-	id_detalle_almacen SERIAL NOT NULL,
-	PRIMARY KEY(id_detalle_almacen),
-	id_almacen INTEGER REFERENCES almacen,
 	id_insumos INTEGER REFERENCES insumos,
-	piezas INTEGER,
-	precio REAL,
-	subtotal REAL
+	piezas INTEGER
 );

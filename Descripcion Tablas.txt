@@ -16,7 +16,4 @@ PEDIDOS_DESPACHADOS: Cuando un proveedor atienda nuestro pedido, esta tabla nos 
 		     de cada cosa que se pidió en el pedido.
 
 ALMACEN: Es la tabla primaria que nosotros vamos a poder llenar cuando un proveedor nos atienda un pedido, posteriormente
-	 identificar cuanto nos llegó de cada cosa, agregamos un total, porque el pedido no es de a grapa
-
-DETALLE_ALMACEN: Es la tabla secundaria donde se apoya almacen para poder guardar en realidad que materiales, cuanto le llegó de
-		 cada uno, a que precio, con un subtotal.
+	 identificar cuanto nos llegó de cada cosa.
