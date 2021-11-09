@@ -84,6 +84,7 @@ DECLARE
     verificar_actualizacion INTEGER;
     verificar_resta INTEGER;
     variable VARCHAR;
+    i INTEGER;
 BEGIN
     
     -- CAMBIAMOS ESTATUS EN PEDIDOS DESPACHADOS
@@ -106,31 +107,39 @@ BEGIN
     --DESCONTAMOS DE INSUMOS
     EXECUTE cadena_restar;
 
-    -- SI EXISTE ALGUN NUMERO NEGATIVO, DEJAMOS EL STOCK EN 0
+    -- SI EXISTE ALGUN NUMERO NEGATIVO HUBO UN ERROR Y QUEBRAMOS
     verificar_resta := (SELECT COUNT(*) FROM insumos WHERE stock < 0);
     IF verificar_resta > 0 THEN
-        UPDATE insumos set stock = 0 WHERE stock < 0;
+        variable := 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE';
+        EXECUTE 'INSERT INTO almacen(id_pedidos_despachados, id_insumos,piezas) VALUES (0,0,3)';
+    ELSE
+        variable := 'PEDIDO RECIBIDO CORRECTAMENTE';
     END IF;
 
-    variable := 'PEDIDO RECIBIDO CORRECTAMENTE';
     RETURN variable;
 EXCEPTION
     WHEN SQLSTATE '23503' THEN
-        
+        IF variable = 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE' THEN
+            RETURN 'HAY INSUFICIENTE STOCK PARA UNO DE LOS PEDIDOS';
+        ELSE 
             IF variable = 'ERROR EN ACTUALIZAR' THEN
                 RETURN 'ERROR EN ACTUALIZAR EL ESTATUS PEDIDO';
             ELSE
                 RETURN 'ERROR, ALGO NO COINCIDE';
             END IF;
+        END IF;
     WHEN SQLSTATE '42830' THEN
-        
+        IF variable = 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE' THEN
+            RETURN 'HAY INSUFICIENTE STOCK PARA UNO DE LOS PEDIDOS';
+        ELSE 
             IF variable = 'ERROR EN ACTUALIZAR' THEN
                 RETURN 'ERROR EN ACTUALIZAR EL ESTATUS PEDIDO';
             ELSE
                 RETURN 'ERROR, ALGO NO COINCIDE';
             END IF;
+        END IF;
 
     ROLLBACK;
     COMMIT;
 END;
-$BODY$ LANGUAGE 'plpgsql';
+$BODY$ LANGUAGE 'plpgsql'; 
