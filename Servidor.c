@@ -147,7 +147,7 @@ int main(){
                         }else{
                             printf("\n\tConsulta1: %s",almacen.consulta);
                             printf("\n\tConsulta2: %s",almacen.consulta_concatenar);
-                            sprintf(cad,"%s","vas bien");
+                            sprintf(cad,"%s",alta_almacen(atoi(almacen.pedido_despachado),almacen.consulta,almacen.consulta_concatenar));
                             write(fd2,cad, sizeof(cad));
                         }
 

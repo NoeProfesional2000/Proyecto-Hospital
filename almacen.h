@@ -10,6 +10,7 @@ const char* alta_detalle_pedido(int pedido, char consulta[1020]);
 const char* buscar_pedido_pendiente();
 const char* buscar_insumo_despachados(int id);
 const char* contar_insumo_despachados(int id);
+const char* alta_almacen(int pedido, char consulta[1020],char consulta2[1020]);
 
 char todo[1020];
 char ultimo_pedido[100];
@@ -312,7 +313,7 @@ const char* alta_detalle_pedido(int pedido, char consulta[1020]){
     	return "\n***Error en el sistema***\n";
     }
 	PQfinish(conn);
-} //Cierra funci�n de Alta �rea requiriente
+}
 
 const char* buscar_pedido_pendiente(){
     char consulta[1020];
@@ -430,3 +431,34 @@ const char* contar_insumo_despachados(int id){
     return todo;
     PQfinish(conn);
 }
+
+const char* alta_almacen(int pedido, char consulta[1020],char consulta2[1020]){
+    char tab[50], cad[1020];
+    PGconn *conn;
+    PGresult *resultado;
+    int i,j;
+// Se realiza la conexi�n e inserci�n de datos requeridos para dar de alta al �rea Requiriente. //
+	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
+	if(PQstatus(conn) != CONNECTION_BAD)
+    {
+// Se conecta con el PL para poder realizar la inserci�n y validaciones al realizar la operaci�n. //
+     sprintf(cad, "SELECT Insertar_Almacen('%d','%s','%s');",pedido,consulta,consulta2);
+	 resultado = PQexec(conn, cad);
+    if(PQntuples(resultado) == 1){
+	    for (i = 0; i < PQntuples(resultado); i++){
+            for (j = 0; j < PQnfields(resultado); j++){
+	        	printf("\t%s\t    ",PQgetvalue(resultado,i,j));
+	        	strcat(datos_consulta,PQgetvalue(resultado,i,j));
+	        	sprintf(datos_consulta,"%s",PQgetvalue(resultado,i,j));
+		    }
+		    puts("\n");
+	    }
+		    return datos_consulta;
+	}else{
+			return "\t\t***Error en el servidor***\n";
+		}
+    }else{
+    	return "\n***Error en el sistema***\n";
+    }
+	PQfinish(conn);
+} //Cierra funci�n de Alta �rea requiriente

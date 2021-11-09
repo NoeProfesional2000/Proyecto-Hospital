@@ -234,7 +234,7 @@ int main(int argc, char *argv[]){
                                     write(FileDescriptor,&almacen,sizeof(almacen));
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
-                                    printf("----recuerde seleccionar todo los materiales que se muestran anteriormente----");
+                                    printf("\n----recuerde seleccionar todo los materiales que se muestran anteriormente----");
                                     for(int i = 0; i < atoi(cadena); i++){
                                         printf("\nIngrese el id del material: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
