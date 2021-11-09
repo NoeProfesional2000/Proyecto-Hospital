@@ -234,14 +234,15 @@ int main(int argc, char *argv[]){
                                     write(FileDescriptor,&almacen,sizeof(almacen));
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
+                                    printf("----recuerde seleccionar todo los materiales que se muestran anteriormente----");
                                     for(int i = 0; i < atoi(cadena); i++){
-                                        printf("\tIngrese el id del material: ");
+                                        printf("\nIngrese el id del material: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
-                                        printf("\t--la cantidad a ingresar debe ser menor o igual a las piezas mostradas");
-                                        printf("\tIngrese la cantidad de material que ingresada: ");
+                                        printf("\n--la cantidad a ingresar debe ser menor o igual a las piezas mostradas");
+                                        printf("\nIngrese la cantidad de material que ingresada: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
 
-                                        sprintf(apoyo_2,"UPDATE insumos SET stock = (stock - %d) WHERE id_insumos = %d;",atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                        sprintf(apoyo_2,"UPDATE insumos SET stock = (stock - %d) WHERE id_insumos = %d;",atoi(almacen.stock),atoi(almacen.nombreMaterial));
                                         strcat(almacen.consulta_concatenar,apoyo_2);
                                         memset(apoyo_2,0,sizeof(apoyo_2));
 
