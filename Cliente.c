@@ -32,6 +32,7 @@ struct almacen{
     char piezas[5];
     char descripcion[100];
     char consulta[1020];
+    char consulta_concatenar[1020];
     char ultimo_pedido[5];
     char pedido_despachado[5];
 };
@@ -47,7 +48,7 @@ int main(int argc, char *argv[]){
     struct almacen almacen;
 
     /*Variables normales*/
-    char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800],cadenaApoyo[500];
+    char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800],cadenaApoyo[500],apoyo_2[500];
     struct timeval tiempo_general;
     int cantidad = 0;
 
@@ -221,13 +222,49 @@ int main(int argc, char *argv[]){
                                     read(FileDescriptor,cadena,sizeof(cadena));
                                     //traemos todo los insumos que correspondan a esa area //
                                     printf("-----------------------------------------------------------");
+                                    printf("\n----Productos que corresponden al pedido seleccionado----");
                                     printf("\n\tID\tPIEZAS\tPRODUCTO\n");
                                     printf("%s\n",cadena);
+                                    printf("-----------------------------------------------------------");
 
+                                    // abrimos otra conexion al servidor //  
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "contar_productos");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    bzero(cadena,sizeof(cadena));
+                                    read(FileDescriptor,cadena,sizeof(cadena));
+                                    for(int i = 0; i < atoi(cadena); i++){
+                                        printf("\tIngrese el id del material: ");
+                                        scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
+                                        printf("\t--la cantidad a ingresar debe ser menor o igual a las piezas mostradas");
+                                        printf("\tIngrese la cantidad de material que ingresada: ");
+                                        scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
+
+                                        sprintf(apoyo_2,"UPDATE insumos SET stock = (stock - %d) WHERE id_insumos = %d;",atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                        strcat(almacen.consulta_concatenar,apoyo_2);
+                                        memset(apoyo_2,0,sizeof(apoyo_2));
+
+                                        sprintf(cadenaApoyo,"(%d,%d,%d)",atoi(almacen.pedido_despachado),atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                        strcat(almacen.consulta,cadenaApoyo);
+
+                                        if(i != (cantidad-1)){
+                                            strcat(almacen.consulta,",");
+                                        }else{
+                                            strcat(almacen.consulta,";");
+                                        }
+                                        memset(cadenaApoyo,0,sizeof(cadenaApoyo));
+                                    }
+                                    FileDescriptor = Conexion_Socket(server);
+                                    sprintf(almacen.validar_entrada, "diferente");
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&almacen,sizeof(almacen));
+                                    // Lee datos enviaos desde servidor //  
+                                    read(FileDescriptor,cad,sizeof(cad));
+                                    printf("\n\tServidor:%s\n",cad);
                                     Ejecucion_Final(begin_pedido_pendiente.tv_sec,begin_pedido_pendiente.tv_usec);
                                     printf("\n\t\t\t  Presione '0' para continuar... ");                    
                                     while(getchar() != '0');
-
                                 break;
                                 case 4:
 

@@ -9,6 +9,7 @@ const char* buscar_ultimo_pedido();
 const char* alta_detalle_pedido(int pedido, char consulta[1020]);
 const char* buscar_pedido_pendiente();
 const char* buscar_insumo_despachados(int id);
+const char* contar_insumo_despachados(int id);
 
 char todo[1020];
 char ultimo_pedido[100];
@@ -364,6 +365,48 @@ const char* buscar_insumo_despachados(int id){
     if(PQstatus(conn) != CONNECTION_BAD)
     {
      sprintf(consulta, "SELECT dp.id_insumos,dp.piezas,i.nombre_producto FROM pedidos_despachados pd INNER JOIN pedidos p ON pd.estatus='pendiente' AND pd.id_pedidos=p.id_pedidos AND pd.id_pedidos_despachados='%d' INNER JOIN detalle_pedidos dp ON pd.id_pedidos = dp.id_pedidos INNER JOIN insumos i ON dp.id_insumos = i.id_insumos", id);
+     resultado = PQexec(conn, consulta);
+        if(resultado != NULL){
+            puts("\n-------------------------------------------\n");
+            for (i = 0; i < PQntuples(resultado); i++){
+                for (j = 0; j < PQnfields(resultado); j++){
+                  strcat(todo,"\t");
+                  strcat(todo,PQgetvalue(resultado,i,j));
+                  printf("  [%s]",PQgetvalue(resultado,i,j));
+                }
+                strcat(todo,"\n");
+                puts("\n");
+            }
+            puts("-------------------------------------------\n");
+        }
+        if(PQresultStatus(resultado) != PGRES_TUPLES_OK){
+            sprintf(todo,"----Error en el servidor----");
+        }else if(PQntuples(resultado) == 0){
+            sprintf(todo,"----No hay areas requeridas----");
+        }
+    }else{
+        sprintf(todo,"----Error en el servidor----");
+        
+    }
+    return todo;
+    PQfinish(conn);
+}
+
+const char* contar_insumo_despachados(int id){
+    char consulta[1020];
+    bzero(todo,sizeof(todo));
+    PGconn *conn;
+    PGresult *resultado;
+    PGresult *res;
+    int i,j;
+
+    conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
+    if(PQstatus(conn) != CONNECTION_BAD)
+    {
+     sprintf(consulta, "SELECT COUNT(*) as INSUMOS_ASIGNADOS FROM pedidos_despachados pd
+        INNER JOIN pedidos p ON pd.id_pedidos_despachados = %d' AND pd.estatus='pendiente' AND pd.id_pedidos=p.id_pedidos
+        INNER JOIN area_requiriente ar ON p.id_area_requiriente = ar.id_area_requiriente
+        INNER JOIN detalle_pedidos dp ON dp.id_pedidos = p.id_pedidos GROUP BY (p.id_pedidos, ar.nombre_area, p.descripcion, p.fecha_creacion)", id);
      resultado = PQexec(conn, consulta);
         if(resultado != NULL){
             puts("\n-------------------------------------------\n");

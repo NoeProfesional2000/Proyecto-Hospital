@@ -33,6 +33,7 @@ struct almacen{
     char piezas[5];
     char descripcion[100];
     char consulta[1020];
+    char consulta_concatenar[1020];
     char ultimo_pedido[5];
     char pedido_despachado[5];
 };
@@ -138,6 +139,16 @@ int main(){
                         printf("\n\tvalor: %s",almacen.pedido_despachado);
                         sprintf(cadena,"%s", buscar_insumo_despachados(atoi(almacen.pedido_despachado)));
                         write(fd2,cadena,sizeof(cadena));
+                        }else if(strstr(almacen.validar_entrada,"contar_productos")){
+                        bzero(cadena,sizeof(cadena));
+                        printf("\n\tvalor: %s",almacen.pedido_despachado);
+                        sprintf(cadena,"%s",contar_insumo_despachados(atoi(almacen.pedido_despachado)));
+                        write(fd2,cadena,sizeof(cadena));
+                        }else{
+                            printf("\n\tConsulta1: %s",almacen.consulta);
+                            printf("\n\tConsulta2: %s",almacen.consulta_concatenar);
+                            sprintf(cad,"%s","vas bien");
+                            write(fd2,cad, sizeof(cad));
                         }
 
                     break;
