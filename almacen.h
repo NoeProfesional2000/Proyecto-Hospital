@@ -404,7 +404,7 @@ const char* contar_insumo_despachados(int id){
     if(PQstatus(conn) != CONNECTION_BAD)
     {
      sprintf(consulta, "SELECT COUNT(*) as INSUMOS_ASIGNADOS FROM pedidos_despachados pd
-        INNER JOIN pedidos p ON pd.id_pedidos_despachados = %d' AND pd.estatus='pendiente' AND pd.id_pedidos=p.id_pedidos
+        INNER JOIN pedidos p ON pd.id_pedidos_despachados = '%d' AND pd.estatus='pendiente' AND pd.id_pedidos=p.id_pedidos
         INNER JOIN area_requiriente ar ON p.id_area_requiriente = ar.id_area_requiriente
         INNER JOIN detalle_pedidos dp ON dp.id_pedidos = p.id_pedidos GROUP BY (p.id_pedidos, ar.nombre_area, p.descripcion, p.fecha_creacion)", id);
      resultado = PQexec(conn, consulta);
