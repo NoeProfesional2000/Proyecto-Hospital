@@ -249,7 +249,7 @@ int main(int argc, char *argv[]){
                                         sprintf(cadenaApoyo,"(%d,%d,%d)",atoi(almacen.pedido_despachado),atoi(almacen.nombreMaterial),atoi(almacen.stock));
                                         strcat(almacen.consulta,cadenaApoyo);
 
-                                        if(i != (cantidad-1)){
+                                        if(i != (atoi(cadena)-1)){
                                             strcat(almacen.consulta,",");
                                         }else{
                                             strcat(almacen.consulta,";");
