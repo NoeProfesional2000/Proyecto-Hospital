@@ -106,37 +106,29 @@ BEGIN
     --DESCONTAMOS DE INSUMOS
     EXECUTE cadena_restar;
 
-    -- SI EXISTE ALGUN NUMERO NEGATIVO HUBO UN ERROR Y QUEBRAMOS
+    -- SI EXISTE ALGUN NUMERO NEGATIVO, DEJAMOS EL STOCK EN 0
     verificar_resta := (SELECT COUNT(*) FROM insumos WHERE stock < 0);
     IF verificar_resta > 0 THEN
-        variable := 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE';
-        EXECUTE 'INSERT INTO almacen(id_pedidos_despachados, id_insumos,piezas) VALUES (0,0,3)';
-    ELSE
-        variable := 'PEDIDO RECIBIDO CORRECTAMENTE';
+        UPDATE insumos set stock = 0 WHERE stock < 0;
     END IF;
 
+    variable := 'PEDIDO RECIBIDO CORRECTAMENTE';
     RETURN variable;
 EXCEPTION
     WHEN SQLSTATE '23503' THEN
-        IF variable = 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE' THEN
-            RETURN 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE';
-        ELSE 
+        
             IF variable = 'ERROR EN ACTUALIZAR' THEN
                 RETURN 'ERROR EN ACTUALIZAR EL ESTATUS PEDIDO';
             ELSE
                 RETURN 'ERROR, ALGO NO COINCIDE';
             END IF;
-        END IF;
     WHEN SQLSTATE '42830' THEN
-        IF variable = 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE' THEN
-            RETURN 'EL STOCK PEDIDO, SOBREPASA AL EXISTENTE';
-        ELSE 
+        
             IF variable = 'ERROR EN ACTUALIZAR' THEN
                 RETURN 'ERROR EN ACTUALIZAR EL ESTATUS PEDIDO';
             ELSE
                 RETURN 'ERROR, ALGO NO COINCIDE';
             END IF;
-        END IF;
 
     ROLLBACK;
     COMMIT;
