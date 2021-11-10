@@ -37,6 +37,12 @@ struct almacen{
     char pedido_despachado[5];
 };
 
+struct reportes{
+    char opcion_secundaria[5];
+    char ver[5];
+    char Mensaje[50];
+};
+
 int main(int argc, char *argv[]){
     /*Variables del Socket*/
     int FileDescriptor;
@@ -46,10 +52,12 @@ int main(int argc, char *argv[]){
     /*Uso del struct*/
     struct area_requiriente area_requiriente;
     struct almacen almacen;
+    struct reportes reportes;
 
     /*Variables normales*/
     char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800],cadenaApoyo[500],apoyo_2[500];
     struct timeval tiempo_general;
+    struct timeval tiempo_reportes;
     int cantidad = 0;
 
     if (argc !=2) {
@@ -91,8 +99,8 @@ int main(int argc, char *argv[]){
                                     // Se decara tiempo de inicio //
                                     struct timeval begin_pedido;
                                     gettimeofday(&begin_pedido, 0);
-                                    
-                                    // Escribe y envía datos a servidor //  
+
+                                    // Escribe y envía datos a servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     sprintf(almacen.validar_entrada, "areas_requiriente");
                                     write(FileDescriptor,opc,sizeof(opc));
@@ -111,7 +119,7 @@ int main(int argc, char *argv[]){
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.areaRequiriente);
                                     printf("\n\tIngrese una descripcion: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.descripcion);
-                                    // abrimos otra conexion al servidor //  
+                                    // abrimos otra conexion al servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     sprintf(almacen.validar_entrada, "insumos");
                                     write(FileDescriptor,opc,sizeof(opc));
@@ -135,10 +143,10 @@ int main(int argc, char *argv[]){
                                     //Asignado primera parte...
                                     printf("\nCuantos materiales va a ingresar: ");
                                     scanf("%d",&cantidad);
-                                    
+
                                     bzero(cadenaApoyo,sizeof(cadenaApoyo));
                                     bzero(almacen.consulta,sizeof(almacen.consulta));
-                                    for(int i = 0; i < cantidad; i++){                      
+                                    for(int i = 0; i < cantidad; i++){
                                         printf("\tIngrese el id del material: ");
                                         scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
                                         printf("\tIngrese la cantidad del material: ");
@@ -158,13 +166,13 @@ int main(int argc, char *argv[]){
                                     sprintf(almacen.validar_entrada, "diferente");
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                    // Lee datos enviaos desde servidor //  
+                                    // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
                                     printf("\n\tServidor:%s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                     Ejecucion_Final(begin_pedido.tv_sec,begin_pedido.tv_usec);
-                                    printf("\n\t\t\t  Presione '0' para continuar... ");                    
-                                    while(getchar() != '0');      
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");
+                                    while(getchar() != '0');
                                 break;
                                 case 2:
                                     system("clear");// Limpiar pantalla //
@@ -177,16 +185,16 @@ int main(int argc, char *argv[]){
                                     // Se decara tiempo de inicio //
                                     struct timeval begin_alta;
                                     gettimeofday(&begin_alta, 0);
-                                    // Escribe y envía datos a servidor //  
+                                    // Escribe y envía datos a servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                     // Lee datos enviaos desde servidor //  
+                                     // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
                                     printf("\n\tServidor:%s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                     Ejecucion_Final(begin_alta.tv_sec,begin_alta.tv_usec);
-                                    printf("\n\t\t\t  Presione '0' para continuar... ");                    
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");
                                     while(getchar() != '0');
 
 
@@ -195,7 +203,7 @@ int main(int argc, char *argv[]){
                                     system("clear");
                                     struct timeval begin_pedido_pendiente;
                                     gettimeofday(&begin_pedido_pendiente, 0);
-                                    // Escribe y envía datos a servidor //  
+                                    // Escribe y envía datos a servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     sprintf(almacen.validar_entrada, "pedido_despachado");
                                     write(FileDescriptor,opc,sizeof(opc));
@@ -212,8 +220,8 @@ int main(int argc, char *argv[]){
                                     printf("-----------------------------------------------------------");
                                     printf("\n\tIngrese el id del pedido que desea levantar: ");
                                     scanf(" %2048[0-9a-zA-Z ]s", almacen.pedido_despachado);
-                                   
-                                    // abrimos otra conexion al servidor //  
+
+                                    // abrimos otra conexion al servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     sprintf(almacen.validar_entrada, "despachar");
                                     write(FileDescriptor,opc,sizeof(opc));
@@ -227,7 +235,7 @@ int main(int argc, char *argv[]){
                                     printf("%s\n",cadena);
                                     printf("-----------------------------------------------------------");
 
-                                    // abrimos otra conexion al servidor //  
+                                    // abrimos otra conexion al servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     sprintf(almacen.validar_entrada, "contar_productos");
                                     write(FileDescriptor,opc,sizeof(opc));
@@ -264,11 +272,11 @@ int main(int argc, char *argv[]){
                                     sprintf(almacen.validar_entrada, "diferente");
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                    // Lee datos enviaos desde servidor //  
+                                    // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
                                     printf("\n\tServidor:%s\n",cad);
                                     Ejecucion_Final(begin_pedido_pendiente.tv_sec,begin_pedido_pendiente.tv_usec);
-                                    printf("\n\t\t\t  Presione '0' para continuar... ");                    
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");
                                     while(getchar() != '0');
                                 break;
                                 case 4:
@@ -283,16 +291,16 @@ int main(int argc, char *argv[]){
                                     // Se decara tiempo de inicio //
                                     struct timeval begin_alta_entrada;
                                     gettimeofday(&begin_alta_entrada, 0);
-                                    // Escribe y envía datos a servidor //  
+                                    // Escribe y envía datos a servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&almacen,sizeof(almacen));
-                                     // Lee datos enviaos desde servidor //  
+                                     // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
                                     printf("\n\tServidor:%s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                     Ejecucion_Final(begin_alta_entrada.tv_sec,begin_alta.tv_usec);
-                                    printf("\n\t\t\t  Presione '0' para continuar... ");                    
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");
                                     while(getchar() != '0');
                                 break;
                                 case 5:
@@ -330,17 +338,17 @@ int main(int argc, char *argv[]){
                                  // Se decara tiempo de inicio //
                                      struct timeval begin_alta;
                                      gettimeofday(&begin_alta, 0);
-                                     // Escribe y envía datos a servidor //  
+                                     // Escribe y envía datos a servidor //
                                  FileDescriptor = Conexion_Socket(server);
                                  write(FileDescriptor,opc,sizeof(opc));
                                  write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
-                                     // Lee datos enviaos desde servidor //  
+                                     // Lee datos enviaos desde servidor //
                                  read(FileDescriptor,cad,sizeof(cad));
                                  printf("\n\tServidor:%s\n",cad);
                      //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                  Ejecucion_Final(begin_alta.tv_sec,begin_alta.tv_usec);
                                  printf("\n\t\t\t  Presione '0' para continuar... ");
-                                 
+
                                 while(getchar() != '0');
                                 break;
                                 case 2:
@@ -352,11 +360,11 @@ int main(int argc, char *argv[]){
                                 // Se decara tiempo de inicio //
                                      struct timeval begin_baja;
                                      gettimeofday(&begin_baja, 0);
-                                    // Escribe y envía datos a servidor // 
+                                    // Escribe y envía datos a servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                 write(FileDescriptor,opc,sizeof(opc));
                                 write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
-                                // Lee datos enviaos desde servidor //    
+                                // Lee datos enviaos desde servidor //
                                 read(FileDescriptor,cad1,sizeof(cad1));
                                 printf("\n\tServidor:%s\n",cad1);
                                  //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
@@ -375,7 +383,7 @@ int main(int argc, char *argv[]){
                                     // Se decara tiempo de inicio //
                                      struct timeval begin_ver;
                                      gettimeofday(&begin_ver, 0);
-                                    // Escribe y envía datos a servidor // 
+                                    // Escribe y envía datos a servidor //
                                     FileDescriptor = Conexion_Socket(server);
                                  write(FileDescriptor,opc,sizeof(opc));
                                  write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
@@ -383,7 +391,7 @@ int main(int argc, char *argv[]){
                                  printf("Servidor:\n ");
                                  printf("\n\n\t--------- Datos de Area Requiriente ----------");
                                      puts("\n\n\t ID             NOMBRE             DESCRIPCION            ESTATUS\n");
-                                     // Lee datos enviaos desde servidor //  
+                                     // Lee datos enviaos desde servidor //
                                  read(FileDescriptor,cad,sizeof(cad));
                                  printf("\n\t %s \n",cad);
                                   //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
@@ -414,13 +422,67 @@ int main(int argc, char *argv[]){
                         scanf("%s",opcion4);
                         /*¿Acaso es una letra lo que ha ingresad0?*/
                         if(Validar_Opcion(opcion4) == 1){
-                            sprintf(area_requiriente.opcion_secundaria,"%s",opcion4);
+                            sprintf(reportes.opcion_secundaria,"%s",opcion4);
                             switch(atoi(opcion4)){
                                 case 1:
+                                    system("clear");
+
+                                    //Abrimos conexion
+                                    gettimeofday(&tiempo_reportes, 0);
+                                    FileDescriptor = Conexion_Socket(server);
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&reportes,sizeof(reportes));
+                                    //Recibimos mensaje
+                                    read(FileDescriptor,&reportes.Mensaje,sizeof(reportes.Mensaje));
+                                    //Quiere verlo? si o no, ninguna otra cosa.
+                                    do{
+                                        system("clear");
+                                        printf("%s",reportes.Mensaje);
+                                        printf("\n\t\t\t¿Desea ver el reporte?\n");
+                                        printf("\t\t\t       Si[1]  No[2]: ");
+                                        scanf("%s",reportes.ver);
+
+                                        if(Validar_Opcion(reportes.ver) == 1){
+                                            system("clear");
+                                            if(atoi(reportes.ver) == 1){
+                                                //Indicamos el nombre del reporte a buscar.
+                                                VisualizarReporte("ReportePedidos.txt");
+                                                Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                while(getchar() != '0');
+                                            }else if(atoi(reportes.ver) == 2){
+                                                Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                while(getchar() != '0');
+                                                break;
+                                            }
+                                        }else{
+                                            printf("\n\t\t\t   *** NO SE ACEPTAN LETRAS ***\n");
+                                            printf("\n\t\t\t  Presione '0' para continuar... ");
+                                            while(getchar() != '0');
+                                        }
+                                    }while(atoi(reportes.ver) != 1 && atoi(reportes.ver) != 2);
+
                                 break;
                                 case 2:
+                                    system("clear");
+                                    FileDescriptor = Conexion_Socket(server);
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&reportes,sizeof(reportes));
+
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");
+                                    while(getchar() != '0');
                                 break;
                                 case 3:
+                                    system("clear");
+                                    FileDescriptor = Conexion_Socket(server);
+                                    write(FileDescriptor,opc,sizeof(opc));
+                                    write(FileDescriptor,&reportes,sizeof(reportes));
+
+                                    printf("\n\t\t\t  Presione '0' para continuar... ");
+                                    while(getchar() != '0');
+                                break;
+                                case 4:
                                 break;
                                 default:
                                     printf("\n\t\t\t   *** ELIJA UNA OPCION EXISTENTE ***\n");

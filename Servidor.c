@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include "area_Requiriente.h"
 #include "almacen.h"
+#include "Reportes.h"
 
 #define PORT 3550
 #define BACKLOG 2 /* El número de conexiones permitidas */
@@ -38,6 +39,13 @@ struct almacen{
     char pedido_despachado[5];
 };
 
+struct reportes{
+    char opcion_secundaria[5];
+    char ver[5];
+    char Mensaje[50];
+};
+
+
 int main(){
 
     int fd,fd2; //La primera crea el socket, la segunda recoge a los clientes de la lista de espera....
@@ -49,6 +57,7 @@ int main(){
     /*Uso del struct*/
     struct area_requiriente area_requiriente;
     struct almacen almacen;
+    struct reportes reportes;
 
    /*Variables normales*/
    char opc[5],cadena[1020], pedido_despachado[5];
@@ -133,7 +142,7 @@ int main(){
                         if(strstr(almacen.validar_entrada,"pedido_despachado")){
                         bzero(cadena,sizeof(cadena));
                         sprintf(cadena,"%s",buscar_pedido_pendiente());
-                        write(fd2,cadena,sizeof(cadena));  
+                        write(fd2,cadena,sizeof(cadena));
                         }else if(strstr(almacen.validar_entrada,"despachar")){
                         bzero(cadena,sizeof(cadena));
                         printf("\n\tvalor: %s",almacen.pedido_despachado);
@@ -167,7 +176,7 @@ int main(){
             case 2:
                 read(fd2,&area_requiriente,sizeof(area_requiriente));
                 switch(atoi(area_requiriente.opcion_secundaria)){
-                    case 1: 
+                    case 1:
                     // Se limpia pantalla, obtiene datos para Alta de Área, envía mensaje de confirmación de ALta //
                         system("clear");
                         printf("\n\t--------------- ALTA AREA REQUIRIENTE -------------\n");
@@ -197,7 +206,21 @@ int main(){
                 }
             break;
             case 3:
-                /*Switch de Almacen*/
+                read(fd2,&reportes,sizeof(reportes));
+                switch(atoi(reportes.opcion_secundaria)){
+                    case 1:
+                        printf("\n\t\t*** REPORTE 1 ***");
+                        busqueda_Cedula_Concatenar();
+                        CabeceraReporte();
+                        write(fd2,validarReporte,sizeof(validarReporte));
+                    break;
+                    case 2:
+                        printf("\n\t\t*** REPORTE 2 ***");
+                    break;
+                    case 3:
+                        printf("\n\t\t*** REPORTE 3 ***");
+                    break;
+                }
             break;
             case 4:
                 /*Switch de Reportes*/
@@ -210,4 +233,4 @@ int main(){
         close(fd2);
     }
     close(fd);
-}   
+}

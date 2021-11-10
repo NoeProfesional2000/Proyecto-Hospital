@@ -76,3 +76,22 @@ int Validar_Opcion(char opcion[10]){
         return 1;
     }
 }
+
+//Al terminar de crear un reporte, lo mandamos a llamar.
+void VisualizarReporte(char cadena[30]){
+	char lectura;
+	FILE *reporte;
+    if((reporte = fopen("ReportePedidos.txt", "r")) == NULL){
+        printf("\n\n\n\t\t*** EL REPORTE NO EXISTE ***\n");
+    }else{
+        reporte = fopen(cadena,"r");
+	    while(1){
+		    lectura = fgetc(reporte);
+         	if(lectura == EOF)
+          		break;
+          	else
+          	printf("%c",lectura);
+       }
+       fclose(reporte);
+    }
+}
