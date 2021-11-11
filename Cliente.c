@@ -40,6 +40,8 @@ struct almacen{
 struct reportes{
     char opcion_secundaria[5];
     char ver[5];
+    char fecha_inicial[11];
+    char fecha_final[11];
     char Mensaje[50];
 };
 
@@ -53,6 +55,13 @@ int main(int argc, char *argv[]){
     struct area_requiriente area_requiriente;
     struct almacen almacen;
     struct reportes reportes;
+    struct pedidosCompletos{
+        char id[3];
+        char descripcion[100];
+        char estatus[11];
+        char fecha[11];
+        int total;
+    }pedidosCompletos[30];
 
     /*Variables normales*/
     char opc[5],opcion[5],opcion2[5],opcion3[5],opcion4[5], cad[100], cad1[100],cadena[800],cadenaApoyo[500],apoyo_2[500];
@@ -438,8 +447,8 @@ int main(int argc, char *argv[]){
                                     do{
                                         system("clear");
                                         printf("%s",reportes.Mensaje);
-                                        printf("\n\t\t\t¿Desea ver el reporte?\n");
-                                        printf("\t\t\t       Si[1]  No[2]: ");
+                                        printf("\n\t\t\t\t¿Desea ver el reporte?\n");
+                                        printf("\t\t\t\t       Si[1]  No[2]: ");
                                         scanf("%s",reportes.ver);
 
                                         if(Validar_Opcion(reportes.ver) == 1){
@@ -466,23 +475,69 @@ int main(int argc, char *argv[]){
                                 break;
                                 case 2:
                                     system("clear");
+                                    printf("\n\n\t*** Por favor realice correctamente lo que se pide a continuacion.***\n\n");
+                                    printf("\t\t         *** Formato de fechas = [Año-Mes-Dia] ***\n\n");
+                                    printf("\t\tFecha Inicial: ");
+                                    scanf("%s",reportes.fecha_inicial);
+
+                                    printf("\n\t\tFecha Final: ");
+                                    scanf("%s",reportes.fecha_final);
+
+                                    gettimeofday(&tiempo_reportes, 0);
                                     FileDescriptor = Conexion_Socket(server);
                                     write(FileDescriptor,opc,sizeof(opc));
                                     write(FileDescriptor,&reportes,sizeof(reportes));
 
-                                    printf("\n\t\t\t  Presione '0' para continuar... ");
-                                    while(getchar() != '0');
+                                    read(FileDescriptor,&reportes,sizeof(reportes));
+                                    if(strstr(reportes.Mensaje,"obtenido")){
+                                        read(FileDescriptor,&pedidosCompletos,sizeof(pedidosCompletos));
+                                        system("clear");
+                                        printf("\n\n------------------------------------------------------------------------------\n");
+                                        printf("\n\tID_PEDIDO\t\tDESCRIPCION\tESTATUS\t\tFECHA\n\n");
+                                        for(int i = 0; i < pedidosCompletos[0].total; i++){
+                                            printf("\t     %s\t\t%s\t%s\t\t%s\n",pedidosCompletos[i].id,pedidosCompletos[i].descripcion,pedidosCompletos[i].estatus,pedidosCompletos[i].fecha);
+                                        }
+                                        printf("\n------------------------------------------------------------------------------\n");
+                                        printf("\nIngrese el ID del pedido que desea generar reporte: ");
+                                        scanf("%s",pedidosCompletos[0].id);
+                                        write(FileDescriptor,pedidosCompletos[0].id,sizeof(pedidosCompletos[0].id));
+
+                                        read(FileDescriptor,&reportes.Mensaje,sizeof(reportes.Mensaje));
+                                        do{
+                                            system("clear");
+                                            printf("%s",reportes.Mensaje);
+                                            printf("\n\t\t\t\t¿Desea ver el reporte?\n");
+                                            printf("\t\t\t\t       Si[1]  No[2]: ");
+                                            scanf("%s",reportes.ver);
+
+                                            if(Validar_Opcion(reportes.ver) == 1){
+                                                system("clear");
+                                                if(atoi(reportes.ver) == 1){
+                                                    //Indicamos el nombre del reporte a buscar.
+                                                    VisualizarReporte("ReporteIndividual.txt");
+                                                    Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                    printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                    while(getchar() != '0');
+                                                }else if(atoi(reportes.ver) == 2){
+                                                    Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                    printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                    while(getchar() != '0');
+                                                    break;
+                                                }
+                                            }else{
+                                                printf("\n\t\t\t   *** NO SE ACEPTAN LETRAS ***\n");
+                                                printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                while(getchar() != '0');
+                                            }
+                                        }while(atoi(reportes.ver) != 1 && atoi(reportes.ver) != 2);
+                                    }else{
+                                        printf("%s",reportes.Mensaje);
+                                        Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                        printf("\n\t\t\t  Presione '0' para continuar... ");
+                                        while(getchar() != '0');
+                                    }
                                 break;
                                 case 3:
-                                    system("clear");
-                                    FileDescriptor = Conexion_Socket(server);
-                                    write(FileDescriptor,opc,sizeof(opc));
-                                    write(FileDescriptor,&reportes,sizeof(reportes));
-
-                                    printf("\n\t\t\t  Presione '0' para continuar... ");
-                                    while(getchar() != '0');
-                                break;
-                                case 4:
                                 break;
                                 default:
                                     printf("\n\t\t\t   *** ELIJA UNA OPCION EXISTENTE ***\n");
@@ -496,7 +551,7 @@ int main(int argc, char *argv[]){
                             printf("\n\t\t\t  Presione '0' para continuar... ");
                             while(getchar() != '0');
                         }
-                    }while(atoi(opcion4)!=4);
+                    }while(atoi(opcion4)!=3);
                 break;
                 case 4:
                 break;

@@ -10,7 +10,8 @@
 #include <fcntl.h>
 #include "area_Requiriente.h"
 #include "almacen.h"
-#include "Reportes.h"
+#include "Reporte1.h"
+#include "Reporte2.h"
 
 #define PORT 3550
 #define BACKLOG 2 /* El número de conexiones permitidas */
@@ -42,6 +43,8 @@ struct almacen{
 struct reportes{
     char opcion_secundaria[5];
     char ver[5];
+    char fecha_inicial[11];
+    char fecha_final[11];
     char Mensaje[50];
 };
 
@@ -60,7 +63,8 @@ int main(){
     struct reportes reportes;
 
    /*Variables normales*/
-   char opc[5],cadena[1020], pedido_despachado[5];
+   char opc[5],cadena[1020], pedido_despachado[5], idPedidoDespachado[3];
+
 
     //Viene la parte para trabajar con sockets
     if ((fd=socket(AF_INET, SOCK_STREAM, 0)) == -1 ) {
@@ -209,21 +213,39 @@ int main(){
                 read(fd2,&reportes,sizeof(reportes));
                 switch(atoi(reportes.opcion_secundaria)){
                     case 1:
+                    system("clear");
                         printf("\n\t\t*** REPORTE 1 ***");
                         busqueda_Cedula_Concatenar();
                         CabeceraReporte();
                         write(fd2,validarReporte,sizeof(validarReporte));
                     break;
                     case 2:
+                    system("clear");
                         printf("\n\t\t*** REPORTE 2 ***");
-                    break;
-                    case 3:
-                        printf("\n\t\t*** REPORTE 3 ***");
+                        sprintf(reportes.Mensaje,"%s",ValidarFechas(reportes.fecha_inicial,reportes.fecha_final));
+                        if(strstr(reportes.Mensaje,"continue")){
+                            printf("%s",reportes.Mensaje);
+                            sprintf(reportes.Mensaje,"%s",MostrarPedidos(reportes.fecha_inicial,reportes.fecha_final));
+                            if(strstr(reportes.Mensaje,"obtenido")){
+                                //Comenzamos a crear el reporte
+                                printf("MANDAMOS EL STRUCT DE DATOS");
+                                write(fd2,&reportes,sizeof(reportes));
+                                write(fd2,&pedidosCompletos,sizeof(pedidosCompletos));
+
+                                read(fd2,idPedidoDespachado,sizeof(idPedidoDespachado));
+                                //Apartir de aqui comenzamos a crear y generar el reporte...
+                                DefinirEstatus(atoi(idPedidoDespachado));
+                                write(fd2,validarReporte,sizeof(validarReporte));
+                            }else{
+                                printf("%s",reportes.Mensaje);
+                                write(fd2,&reportes,sizeof(reportes));
+                            }
+                        }else{
+                            printf("%s",reportes.Mensaje);
+                            write(fd2,&reportes,sizeof(reportes));
+                        }
                     break;
                 }
-            break;
-            case 4:
-                /*Switch de Reportes*/
             break;
         }
         printf("\n\n\t      #################################################");

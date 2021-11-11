@@ -36,7 +36,7 @@ const char* alta_material(int id_area_requiriente, char nombre_producto[100]){
     }else{
     	return "----Error en el servidor----";
     }
-	PQfinish(conn);  
+	PQfinish(conn);
 }
 
 // Se realiza la conexi�n y busqueda de un area requiriente en especifico. //
@@ -52,13 +52,13 @@ const char* buscar_area_requiriente(char nombre[100], char nombre_producto[100])
     conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
     if(PQstatus(conn) != CONNECTION_BAD)
     {
-     sprintf(consulta, "select id_area_requiriente from area_requiriente where nombre_area = '%s'",nombre);
+     sprintf(consulta, "select id_area_requiriente from area_requiriente where UPPER(nombre_area) = UPPER('%s');",nombre);
      resultado = PQexec(conn, consulta);
         if(resultado != NULL){
             puts("\n-------------------------------------------\n");
             for (i = 0; i < PQntuples(resultado); i++){
                 for (j = 0; j < PQnfields(resultado); j++){
-                  strcat(id,PQgetvalue(resultado,i,j));  
+                  strcat(id,PQgetvalue(resultado,i,j));
                   printf("  [%s]",PQgetvalue(resultado,i,j));
                 }
                 puts("\n");
@@ -71,7 +71,7 @@ const char* buscar_area_requiriente(char nombre[100], char nombre_producto[100])
             return "----No existe esa area----";
         }else if(PQntuples(resultado) > 0){
            return alta_material (atoi(id), nombre_producto);
-            
+
         }
     }else{
         return "----Error en el servidor----";
@@ -101,7 +101,7 @@ const char* actualizar_entrada_inventario(int id, int cantidad){
     }else{
         return "----Error en el servidor----";
     }
-    PQfinish(conn);  
+    PQfinish(conn);
 }
 
 // Se realiza la conexi�n y busqueda de insumos//
@@ -116,13 +116,13 @@ const char* buscar_insumo(char nombre[100], int cantidad){
     conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
     if(PQstatus(conn) != CONNECTION_BAD)
     {
-     sprintf(consulta, "select id_insumos from insumos where nombre_producto = '%s'",nombre);
+     sprintf(consulta, "select id_insumos from insumos where UPPER(nombre_producto) = UPPER('%s');",nombre);
      resultado = PQexec(conn, consulta);
         if(resultado != NULL){
             puts("\n-------------------------------------------\n");
             for (i = 0; i < PQntuples(resultado); i++){
                 for (j = 0; j < PQnfields(resultado); j++){
-                  strcat(id,PQgetvalue(resultado,i,j));  
+                  strcat(id,PQgetvalue(resultado,i,j));
                   printf("  [%s]",PQgetvalue(resultado,i,j));
                 }
                 puts("\n");
@@ -135,7 +135,7 @@ const char* buscar_insumo(char nombre[100], int cantidad){
             return "----No existe ese material----";
         }else if(PQntuples(resultado) > 0){
            return actualizar_entrada_inventario(atoi(id), cantidad);
-            
+
         }
     }else{
         return "----Error en el servidor----";
@@ -177,7 +177,7 @@ const char* buscar_areas_requiriente(){
         }
     }else{
         sprintf(todo,"----Error en el servidor----");
-    	
+
     }
     return todo;
 	PQfinish(conn);
@@ -195,7 +195,7 @@ const char* buscar_todos_los_insumos(int id){
 	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
-     sprintf(consulta, "SELECT (id_insumos,nombre_producto) from insumos where id_area_requiriente = '%d'",id);
+     sprintf(consulta, "SELECT (id_insumos,nombre_producto) from insumos where UPPER(id_area_requiriente) = UPPER('%d');",id);
 	 resultado = PQexec(conn, consulta);
 		if(resultado != NULL){
 			puts("\n-------------------------------------------\n");
@@ -217,7 +217,7 @@ const char* buscar_todos_los_insumos(int id){
         }
     }else{
         sprintf(todo,"----Error en el servidor----");
-    	
+
     }
     return todo;
 	PQfinish(conn);
@@ -244,7 +244,7 @@ const char* alta_pedido(int id_area_requiriente, char descripcion[100]){
     }else{
     	return "----Error en el servidor----";
     }
-	PQfinish(conn);  
+	PQfinish(conn);
 }
 
 // Se realiza la conexi�n y busqueda del ultimo pedido registrado. //
@@ -265,7 +265,7 @@ const char* buscar_ultimo_pedido(){
             puts("\n-------------------------------------------\n");
             for (i = 0; i < PQntuples(resultado); i++){
                 for (j = 0; j < PQnfields(resultado); j++){
-                  strcat(ultimo_pedido,PQgetvalue(resultado,i,j));  
+                  strcat(ultimo_pedido,PQgetvalue(resultado,i,j));
                   printf("  [%s]",PQgetvalue(resultado,i,j));
                 }
                 puts("\n");
@@ -348,7 +348,7 @@ const char* buscar_pedido_pendiente(){
         }
     }else{
         sprintf(todo,"----Error en el servidor----");
-        
+
     }
     return todo;
     PQfinish(conn);
@@ -387,7 +387,7 @@ const char* buscar_insumo_despachados(int id){
         }
     }else{
         sprintf(todo,"----Error en el servidor----");
-        
+
     }
     return todo;
     PQfinish(conn);
@@ -426,7 +426,7 @@ const char* contar_insumo_despachados(int id){
         }
     }else{
         sprintf(todo,"----Error en el servidor----");
-        
+
     }
     return todo;
     PQfinish(conn);

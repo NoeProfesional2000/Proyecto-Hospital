@@ -1,0 +1,27 @@
+--------------------------------------------------------------------------------
+
+                     *** PEDIDOS PENDIENTES Y ATENDIDOS ***
+
+                              *** HOSPITAL GENERAL ****
+                      TAPACHULA DE CORDOVA Y ORDOÑEZ, CHIAPAS.
+                       CARR. ANTIGUO AEROPUERTO S/N – 30700.
+
+                                                                Fecha: 10/11/21.
+                                                                Hora: 18:44:54.
+
+
+--------------------------------------------------------------------------------
+
+  Pedidos Realizados = 3.
+  Pedidos Pendientes = 2.
+
+                     *** Información de los pedidos pendientes ***
+
+  ID          Area           Descripcion      No.Insumos      Fecha creacion
+
+--------------------------------------------------------------------------------
+  9         Farmacia         Holi        3         2021-11-10
+
+--------------------------------------------------------------------------------
+  12         Farmacia         se viene        3         2021-11-10
+--------------------------------------------------------------------------------

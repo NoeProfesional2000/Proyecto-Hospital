@@ -31,10 +31,9 @@ void menuAlmacen(){
 
 void menuReportes(){
     puts("\n\t\t******************REPORTES******************\n\n");
-    puts("\t\t1.- Reporte 1.\n");
-    puts("\t\t2.- Reporte 2.\n");
-    puts("\t\t3.- Reporte 3.\n");
-    puts("\t\t4.- Salir.\n");
+    puts("\t\t1.- Pedidos Pendientes (Conjunto).\n");
+    puts("\t\t2.- Pedidos Pendientes y Realizados (Individual).\n");
+    puts("\t\t3.- Salir.\n");
     printf("\t\tSeleccione una opcion: ");
 }
 void Ejecucion_Final(long tv_sec, long tv_usec){
