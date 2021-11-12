@@ -9,6 +9,7 @@ const char* alta_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
     PGconn *conn;
     PGresult *resultado;
     int i,j;
+    bzero(datos_consulta,sizeof(datos_consulta));
 // Se realiza la conexión e inserción de datos requeridos para dar de alta al Área Requiriente. //
 	puts("\n\t\t ------------ALTA DE AREA REQUIRIENTE------------\n\n");
 	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
@@ -41,12 +42,13 @@ const char* baja_Area_Requiriente(char nombre_Area[40], char descripcion[50]){
     PGconn *conn;
     PGresult *resultado;
     int i,j;
+    bzero(datos_consulta,sizeof(datos_consulta));
 // Conexión a base de datos. //
 	puts("\n\t\t ------------BAJA DE AREA REQUIRIENTE------------\n\n");
 	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
-  // Se realiza la baja del Área Requiriente, se cambia el estatus a 0. //  
+  // Se realiza la baja del Área Requiriente, se cambia el estatus a 0. //
  // Se conecta con el PL para poder realizar la inserción y validaciones al realizar la operación. //
      sprintf(cad, "SELECT Requiriente('%d','%s','%s');",2,nombre_Area,descripcion);
 	 resultado = PQexec(conn, cad);
@@ -77,7 +79,8 @@ const char* ver_Area_Requiriente(char nombre[40]){
   PGresult *resultado;
   PGresult *res;
   int i,j;
-  
+  bzero(datos_consulta,sizeof(datos_consulta));
+
    puts("\n\t\t --------Consulta de Area Requiriente------- \n\n");
    conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
@@ -87,7 +90,7 @@ const char* ver_Area_Requiriente(char nombre[40]){
      resultado = PQexec(conn, cad);
      //Si no se obtiene ningún resultado, se envía un mensaje al usuario. //
     if(PQntuples(PQexec(conn, cad)) == 0){
-    
+
     puts("\n\t\t No existe el Area o se ha dado de baja\n\n");
     // Si obtiene resultado se muestra por medio de un ciclo for. //
      }else if(PQntuples(PQexec(conn, cad)) == 1){
@@ -108,7 +111,7 @@ const char* ver_Area_Requiriente(char nombre[40]){
     	puts("\t\t***Error en el sistema***\n");
     }
 	PQfinish(conn);
-	
+
 	puts("\nPresiona '0' para continuar.");
 	while(getchar() != '0');
 

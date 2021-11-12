@@ -12,6 +12,7 @@
 #include "almacen.h"
 #include "Reporte1.h"
 #include "Reporte2.h"
+#include "semaforos.h"
 
 #define PORT 3550
 #define BACKLOG 2 /* El número de conexiones permitidas */
@@ -97,6 +98,7 @@ int main(){
             printf("\n\t\t--- NO SE PUDO ACEPTAR ESA CONEXION ---\n");
             exit(-1);
         }
+        system("clear");
         printf("\n\t\t··········································");
         printf("\n\t\t·SE OBTUVO UNA CONEXION DESDE [%s]·\n", inet_ntoa(client.sin_addr) );
         printf("\t\t··········································");
@@ -104,6 +106,17 @@ int main(){
         read(fd2,opc,sizeof(opc));
 
         printf("\n\t\t=== INICIANDO OPERACION DE CLIENTE CON IP [%s] ===\n",inet_ntoa(client.sin_addr));
+
+        // === INICIAMOS OPERACIONES DE SEMAFOROS ===
+        idsem = crear_semaforo();
+        if(idsem<0)
+        {
+            perror("\n\t\t=== EL SEMAFORO NO FUE CREADO ===\n");
+            exit(0);
+        }
+
+        inicia_semaforo(idsem);
+
         switch(atoi(opc)){
             case 1:
                 /*Switch de materiales*/
@@ -111,7 +124,8 @@ int main(){
                 switch(atoi(almacen.opcion_secundaria)){
                      case 1:
                       // Se limpia pantalla, obtiene datos para realizar el pedido //
-                      system("clear");
+
+                      printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                       printf("\n\t--------------- REALIZAR PEDIDO --------------\n");
                       if(strstr(almacen.validar_entrada,"areas_requiriente")){
                         bzero(cadena,sizeof(cadena));
@@ -132,7 +146,8 @@ int main(){
                      break;
                      case 2:
                      // Se limpia pantalla, obtiene datos dar de alta un material //
-                        system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t--------------- ALTA DE MATERIAL --------------\n");
                         printf("\n\tArea: %s",almacen.areaRequiriente);
                         printf("\n\tDescripcion: %s",almacen.nombreMaterial);
@@ -141,7 +156,8 @@ int main(){
                     break;
 
                     case 3:
-                        system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t--------------- LEVANTAR PEDIDO --------------\n");
                         if(strstr(almacen.validar_entrada,"pedido_despachado")){
                         bzero(cadena,sizeof(cadena));
@@ -168,7 +184,8 @@ int main(){
 
                     case 4:
                      // Se limpia pantalla, obtiene datos ingresar la entrada de un inventario //
-                        system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t--------------- ENTRADA INVENTARIO --------------\n");
                         printf("\n\tNombre Material: %s",almacen.nombreMaterial);
                         printf("\n\tStock: %s",almacen.stock);
@@ -182,7 +199,8 @@ int main(){
                 switch(atoi(area_requiriente.opcion_secundaria)){
                     case 1:
                     // Se limpia pantalla, obtiene datos para Alta de Área, envía mensaje de confirmación de ALta //
-                        system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t--------------- ALTA AREA REQUIRIENTE -------------\n");
                         printf("\n\tNombre: %s",area_requiriente.nombre_Area);
                         printf("\n\tDescripcion: %s",area_requiriente.descripcion);
@@ -191,16 +209,17 @@ int main(){
                     break;
                     case 2:
                      // Se limpia pantalla, obtiene datos para Baja de Área, envía mensaje de confirmación de ALta //
-                        system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t--------------- BAJA AREA REQUIRIENTE --------------\n");
                         printf("\n\tNombre: %s",area_requiriente.nombre_Area);
                         sprintf(cad1, "%s", baja_Area_Requiriente(area_requiriente.nombre_Area, "descrip"));
-                        sprintf(cad1,"%s", baja_Area_Requiriente(area_requiriente.nombre_Area, area_requiriente.descripcion));
                         write(fd2,cad1, sizeof(cad1));
                     break;
                     case 3:
                      // Se limpia pantalla, obtiene datos para Consulta de Área, Devuelve datos de consulta //
-                        system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t--------------- VER AREA REQUIRIENTE ------------------\n");
                         printf("\n\tNombre: %s",area_requiriente.nombre);
                         sprintf(cad,"%s", ver_Area_Requiriente(area_requiriente.nombre));
@@ -213,14 +232,16 @@ int main(){
                 read(fd2,&reportes,sizeof(reportes));
                 switch(atoi(reportes.opcion_secundaria)){
                     case 1:
-                    system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t\t*** REPORTE 1 ***");
                         busqueda_Cedula_Concatenar();
                         CabeceraReporte();
                         write(fd2,validarReporte,sizeof(validarReporte));
                     break;
                     case 2:
-                    system("clear");
+
+                        printf("\n\t\t=== LA REGION CRITICA ESTA PREPARADA ===\n");
                         printf("\n\t\t*** REPORTE 2 ***");
                         sprintf(reportes.Mensaje,"%s",ValidarFechas(reportes.fecha_inicial,reportes.fecha_final));
                         if(strstr(reportes.Mensaje,"continue")){
@@ -248,6 +269,9 @@ int main(){
                 }
             break;
         }
+        //=== SALIENDO DE LA REGION CRITICA ===
+        termina_semaforo(idsem);
+        printf("\n\t\t=== SALIENDO DE LA REGION CRITICA ===\n");
         printf("\n\n\t      #################################################");
         printf("\n\t      #LA CONEXION CON LA IP[%s] SE HA CERRADO.#\n",inet_ntoa(client.sin_addr));
         printf("\t      #################################################\n");
