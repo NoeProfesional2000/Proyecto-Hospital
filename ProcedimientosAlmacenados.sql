@@ -84,7 +84,10 @@ DECLARE
     verificar_actualizacion INTEGER;
     verificar_resta INTEGER;
     variable VARCHAR;
+    ciclo1 INTEGER;
+    ciclo2 INTEGER;
     i INTEGER;
+
 BEGIN
     
     -- CAMBIAMOS ESTATUS EN PEDIDOS DESPACHADOS
@@ -102,6 +105,18 @@ BEGIN
     -- SI POR ERROR SE ASIGNA UN INSUMO NO EXISTENTE, SE VA A QUEBRAR
     -- INSERTAMOS EN DETALLE ALMACEN
     EXECUTE 'INSERT INTO almacen(id_pedidos_despachados, id_insumos,piezas) VALUES ' || cadena_insertar;
+
+    --SELECT dp.id_insumos FROM pedidos_despachados pd INNER JOIN pedidos p ON pd.id_pedidos_despachados = 6 AND pd.id_pedidos=p.id_pedidos
+    --INNER JOIN detalle_pedidos dp ON p.id_pedidos=dp.id_pedidos ORDER BY dp.id_insumos;
+
+    ciclo1 := (SELECT COUNT(*) FROM pedidos_despachados pd INNER JOIN pedidos p ON pd.id_pedidos_despachados = id AND pd.id_pedidos=p.id_pedidos INNER JOIN detalle_pedidos dp ON p.id_pedidos=dp.id_pedidos GROUP BY dp.id_pedidos);
+
+    ciclo2 := (SELECT COUNT(*) FROM pedidos_despachados pd INNER JOIN almacen a ON pd.id_pedidos_despachados = id AND a.id_pedidos_despachados = pd.id_pedidos_despachados AND a.id_insumos IN (SELECT dp.id_insumos FROM pedidos_despachados pd INNER JOIN pedidos p ON pd.id_pedidos_despachados = id AND pd.id_pedidos=p.id_pedidos INNER JOIN detalle_pedidos dp ON p.id_pedidos=dp.id_pedidos ORDER BY dp.id_insumos) GROUP BY a.id_pedidos_despachados);
+
+    IF ciclo1 != ciclo2 THEN
+        variable := '1';
+        EXECUTE 'INSERT INTO almacen(id_pedidos_despachados, id_insumos,piezas) VALUES (0,0,3)';
+    END IF;
 
     -- SI TODO ESTA CORRECTO RESTAMOS
     --DESCONTAMOS DE INSUMOS
@@ -125,7 +140,11 @@ EXCEPTION
             IF variable = 'ERROR EN ACTUALIZAR' THEN
                 RETURN 'ERROR EN ACTUALIZAR EL ESTATUS PEDIDO';
             ELSE
-                RETURN 'ERROR, ALGO NO COINCIDE';
+                IF variable = '1' THEN
+                    RETURN 'HAY UN INSUMO QUE NO CORRESPONDE AL PEDIDO';
+                ELSE
+                    RETURN 'ERROR, ALGO NO COINCIDE';
+                END IF;
             END IF;
         END IF;
     WHEN SQLSTATE '42830' THEN
@@ -135,7 +154,11 @@ EXCEPTION
             IF variable = 'ERROR EN ACTUALIZAR' THEN
                 RETURN 'ERROR EN ACTUALIZAR EL ESTATUS PEDIDO';
             ELSE
-                RETURN 'ERROR, ALGO NO COINCIDE';
+                IF variable = '1' THEN
+                    RETURN 'HAY UN INSUMO QUE NO CORRESPONDE AL PEDIDO';
+                ELSE
+                    RETURN 'ERROR, ALGO NO COINCIDE';
+                END IF;
             END IF;
         END IF;
 
