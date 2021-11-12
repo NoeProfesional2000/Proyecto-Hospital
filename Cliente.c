@@ -135,49 +135,53 @@ int main(int argc, char *argv[]){
                                     write(FileDescriptor,&almacen,sizeof(almacen));
                                     bzero(cadena,sizeof(cadena));
                                     read(FileDescriptor,cadena,sizeof(cadena));
-                                    //traemos todo los insumos que correspondan a esa area //
-                                    printf("-----------------------------------------------------------");
-                                    printf("\n\tID\tPRODUCTO\n");
-                                    printf("%s\n",cadena);
+                                    if(strstr(cadena,"----Fallo al solicitar un pedido----")){
+                                        printf("%s\n",cadena);
+                                    }else{
+                                        //traemos todo los insumos que correspondan a esa area //
+                                        printf("-----------------------------------------------------------");
+                                        printf("\n\tID\tPRODUCTO\n");
+                                        printf("%s\n",cadena);
 
-                                    //Antes de pedir vamos a traer el id del pedido insertado//
-                                    FileDescriptor = Conexion_Socket(server);
-                                    sprintf(almacen.validar_entrada, "ultimo");
-                                    write(FileDescriptor,opc,sizeof(opc));
-                                    write(FileDescriptor,&almacen,sizeof(almacen));
-                                    read(FileDescriptor,&almacen,sizeof(almacen));
+                                        //Antes de pedir vamos a traer el id del pedido insertado//
+                                        FileDescriptor = Conexion_Socket(server);
+                                        sprintf(almacen.validar_entrada, "ultimo");
+                                        write(FileDescriptor,opc,sizeof(opc));
+                                        write(FileDescriptor,&almacen,sizeof(almacen));
+                                        read(FileDescriptor,&almacen,sizeof(almacen));
 
-                                    //pedimos los datos para hacer la insercion en detalle pedidos//
-                                    printf("-----------------------------------------------------------");
-                                    //Asignado primera parte...
-                                    printf("\nCuantos materiales va a ingresar: ");
-                                    scanf("%d",&cantidad);
+                                        //pedimos los datos para hacer la insercion en detalle pedidos//
+                                        printf("-----------------------------------------------------------");
+                                        //Asignado primera parte...
+                                        printf("\nCuantos materiales va a ingresar: ");
+                                        scanf("%d",&cantidad);
 
-                                    bzero(cadenaApoyo,sizeof(cadenaApoyo));
-                                    bzero(almacen.consulta,sizeof(almacen.consulta));
-                                    for(int i = 0; i < cantidad; i++){
-                                        printf("\tIngrese el id del material: ");
-                                        scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
-                                        printf("\tIngrese la cantidad del material: ");
-                                        scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
+                                        bzero(cadenaApoyo,sizeof(cadenaApoyo));
+                                        bzero(almacen.consulta,sizeof(almacen.consulta));
+                                        for(int i = 0; i < cantidad; i++){
+                                            printf("\tIngrese el id del material: ");
+                                            scanf(" %2048[0-9a-zA-Z ]s", almacen.nombreMaterial);
+                                            printf("\tIngrese la cantidad del material: ");
+                                            scanf(" %2048[0-9a-zA-Z ]s", almacen.stock);
 
-                                        sprintf(cadenaApoyo,"(%d,%d,%d)",atoi(almacen.ultimo_pedido),atoi(almacen.nombreMaterial),atoi(almacen.stock));
-                                        strcat(almacen.consulta,cadenaApoyo);
+                                            sprintf(cadenaApoyo,"(%d,%d,%d)",atoi(almacen.ultimo_pedido),atoi(almacen.nombreMaterial),atoi(almacen.stock));
+                                            strcat(almacen.consulta,cadenaApoyo);
 
-                                        if(i != (cantidad-1)){
-                                            strcat(almacen.consulta,",");
-                                        }else{
-                                            strcat(almacen.consulta,";");
+                                            if(i != (cantidad-1)){
+                                                strcat(almacen.consulta,",");
+                                            }else{
+                                                strcat(almacen.consulta,";");
+                                            }
+                                            memset(cadenaApoyo,0,sizeof(cadenaApoyo));
                                         }
-                                        memset(cadenaApoyo,0,sizeof(cadenaApoyo));
+                                        FileDescriptor = Conexion_Socket(server);
+                                        sprintf(almacen.validar_entrada, "diferente");
+                                        write(FileDescriptor,opc,sizeof(opc));
+                                        write(FileDescriptor,&almacen,sizeof(almacen));
+                                        // Lee datos enviaos desde servidor //
+                                        read(FileDescriptor,cad,sizeof(cad));
+                                        printf("\n\tServidor:%s\n",cad);
                                     }
-                                    FileDescriptor = Conexion_Socket(server);
-                                    sprintf(almacen.validar_entrada, "diferente");
-                                    write(FileDescriptor,opc,sizeof(opc));
-                                    write(FileDescriptor,&almacen,sizeof(almacen));
-                                    // Lee datos enviaos desde servidor //
-                                    read(FileDescriptor,cad,sizeof(cad));
-                                    printf("\n\tServidor:%s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                     Ejecucion_Final(begin_pedido.tv_sec,begin_pedido.tv_usec);
                                     printf("\n\t\t\t  Presione '0' para continuar... ");
@@ -200,7 +204,7 @@ int main(int argc, char *argv[]){
                                     write(FileDescriptor,&almacen,sizeof(almacen));
                                      // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
-                                    printf("\n\tServidor:%s\n",cad);
+                                    printf("\n\tServidor: %s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                     Ejecucion_Final(begin_alta.tv_sec,begin_alta.tv_usec);
                                     printf("\n\t\t\t  Presione '0' para continuar... ");
@@ -283,7 +287,7 @@ int main(int argc, char *argv[]){
                                     write(FileDescriptor,&almacen,sizeof(almacen));
                                     // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
-                                    printf("\n\tServidor:%s\n",cad);
+                                    printf("\n\tServidor: %s\n",cad);
                                     Ejecucion_Final(begin_pedido_pendiente.tv_sec,begin_pedido_pendiente.tv_usec);
                                     printf("\n\t\t\t  Presione '0' para continuar... ");
                                     while(getchar() != '0');
@@ -306,7 +310,7 @@ int main(int argc, char *argv[]){
                                     write(FileDescriptor,&almacen,sizeof(almacen));
                                      // Lee datos enviaos desde servidor //
                                     read(FileDescriptor,cad,sizeof(cad));
-                                    printf("\n\tServidor:%s\n",cad);
+                                    printf("\n\tServidor: %s\n",cad);
                                     //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                     Ejecucion_Final(begin_alta_entrada.tv_sec,begin_alta.tv_usec);
                                     printf("\n\t\t\t  Presione '0' para continuar... ");
@@ -353,7 +357,7 @@ int main(int argc, char *argv[]){
                                  write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
                                      // Lee datos enviaos desde servidor //
                                  read(FileDescriptor,cad,sizeof(cad));
-                                 printf("\n\tServidor:%s\n",cad);
+                                 printf("\n\tServidor: %s\n",cad);
                      //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                  Ejecucion_Final(begin_alta.tv_sec,begin_alta.tv_usec);
                                  printf("\n\t\t\t  Presione '0' para continuar... ");
@@ -375,7 +379,7 @@ int main(int argc, char *argv[]){
                                 write(FileDescriptor,&area_requiriente,sizeof(area_requiriente));
                                 // Lee datos enviaos desde servidor //
                                 read(FileDescriptor,cad1,sizeof(cad1));
-                                printf("\n\tServidor:%s\n",cad1);
+                                printf("\n\tServidor: %s\n",cad1);
                                  //Se pasan los parámetro necesarios al método para marcar final y calcular tiempo de ejecución. //
                                  Ejecucion_Final(begin_baja.tv_sec,begin_baja.tv_usec);
                                  printf("\n\t\t\t  Presione '0' para continuar... ");
@@ -503,33 +507,40 @@ int main(int argc, char *argv[]){
                                         write(FileDescriptor,pedidosCompletos[0].id,sizeof(pedidosCompletos[0].id));
 
                                         read(FileDescriptor,&reportes.Mensaje,sizeof(reportes.Mensaje));
-                                        do{
-                                            system("clear");
+                                        if(strstr(reportes.Mensaje,"*** NO EXISTEN REGISTROS EN ESE PEDIDO ***")){
                                             printf("%s",reportes.Mensaje);
-                                            printf("\n\t\t\t\t¿Desea ver el reporte?\n");
-                                            printf("\t\t\t\t       Si[1]  No[2]: ");
-                                            scanf("%s",reportes.ver);
-
-                                            if(Validar_Opcion(reportes.ver) == 1){
+                                            Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                            printf("\n\t\t\t  Presione '0' para continuar... ");
+                                            while(getchar() != '0');
+                                        }else{
+                                            do{
                                                 system("clear");
-                                                if(atoi(reportes.ver) == 1){
-                                                    //Indicamos el nombre del reporte a buscar.
-                                                    VisualizarReporte("ReporteIndividual.txt");
-                                                    Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                printf("%s",reportes.Mensaje);
+                                                printf("\n\t\t\t\t¿Desea ver el reporte?\n");
+                                                printf("\t\t\t\t       Si[1]  No[2]: ");
+                                                scanf("%s",reportes.ver);
+
+                                                if(Validar_Opcion(reportes.ver) == 1){
+                                                    system("clear");
+                                                    if(atoi(reportes.ver) == 1){
+                                                        //Indicamos el nombre del reporte a buscar.
+                                                        VisualizarReporte("ReporteIndividual.txt");
+                                                        Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                        printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                        while(getchar() != '0');
+                                                    }else if(atoi(reportes.ver) == 2){
+                                                        Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
+                                                        printf("\n\t\t\t  Presione '0' para continuar... ");
+                                                        while(getchar() != '0');
+                                                        break;
+                                                    }
+                                                }else{
+                                                    printf("\n\t\t\t   *** NO SE ACEPTAN LETRAS ***\n");
                                                     printf("\n\t\t\t  Presione '0' para continuar... ");
                                                     while(getchar() != '0');
-                                                }else if(atoi(reportes.ver) == 2){
-                                                    Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);
-                                                    printf("\n\t\t\t  Presione '0' para continuar... ");
-                                                    while(getchar() != '0');
-                                                    break;
                                                 }
-                                            }else{
-                                                printf("\n\t\t\t   *** NO SE ACEPTAN LETRAS ***\n");
-                                                printf("\n\t\t\t  Presione '0' para continuar... ");
-                                                while(getchar() != '0');
-                                            }
-                                        }while(atoi(reportes.ver) != 1 && atoi(reportes.ver) != 2);
+                                            }while(atoi(reportes.ver) != 1 && atoi(reportes.ver) != 2);
+                                         }
                                     }else{
                                         printf("%s",reportes.Mensaje);
                                         Ejecucion_Final(tiempo_reportes.tv_sec,tiempo_reportes.tv_usec);

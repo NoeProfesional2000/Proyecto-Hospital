@@ -25,7 +25,7 @@ const char* alta_material(int id_area_requiriente, char nombre_producto[100]){
     conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
-		sprintf(insercion, "INSERT INTO insumos(id_area_requiriente,nombre_producto,stock,estatus) VALUES ('%d','%s',0,0)",id_area_requiriente, nombre_producto);
+		sprintf(insercion, "INSERT INTO insumos(id_area_requiriente,nombre_producto,stock,estatus) VALUES ('%d','%s',0,1)",id_area_requiriente, nombre_producto);
 	    resultado = PQexec(conn, insercion);
 
      	if(PQresultStatus(resultado) == PGRES_COMMAND_OK){
@@ -195,7 +195,7 @@ const char* buscar_todos_los_insumos(int id){
 	conn=PQsetdbLogin("localhost","5432",NULL,NULL,"proyectohospital","postgres","12345");
 	if(PQstatus(conn) != CONNECTION_BAD)
     {
-     sprintf(consulta, "SELECT (id_insumos,nombre_producto) from insumos where UPPER(id_area_requiriente) = UPPER('%d');",id);
+     sprintf(consulta, "SELECT (id_insumos,nombre_producto) from insumos where id_area_requiriente= '%d';",id);
 	 resultado = PQexec(conn, consulta);
 		if(resultado != NULL){
 			puts("\n-------------------------------------------\n");

@@ -4,13 +4,6 @@
 #include <string.h>
 #include <time.h>
 
-//Primero necesito pedir un rango de fechas.X
-//Extraer los pedidos entre ese rango de fechas.X
-//MostrarlosX
-//Pedir que ingrese el ID para sacar la informacion.X
-//Si el estatus es pendiente, le digo que es lo que esta pidiendo y cuantoX
-//Si el estatus es realizado, tengo que extraer y comparar.
-//Hasta aqui por el momento
 const char* ValidarFechas(char fecha_i[11], char fecha_f[11]);
 const char* MostrarPedidos(char fecha_i[11], char fecha_f[11]);
 const char* MostrarPedidos(char fecha_i[11], char fecha_f[11]);
@@ -20,6 +13,7 @@ const char* ObtenerPedidoRealizado(int id);
 void CabeceraReporte2(int validar);
 void CuerpoReporte2(FILE *reporte,int i);
 
+//Obtengo lista de pedidos para que se seleccione uno
 struct pedidosCompletos{
     char id[3];
     char descripcion[100];
@@ -28,6 +22,7 @@ struct pedidosCompletos{
     int total;
 }pedidosCompletos[30];
 
+//Obtengo informacion de pedido con detalle pedido
 struct pedidosCompletosPendientes{
     char nombre_area[100];
     char descripcion[100];
@@ -38,6 +33,7 @@ struct pedidosCompletosPendientes{
     int total;
 }pedidosCompletosPendientes[30];
 
+//Obtengo informacion de pedidos despachados, con almacen
 struct pedidosCompletosRealizados{
     char fecha_atendido[11];
     char nombre_insumos[50];
@@ -45,7 +41,7 @@ struct pedidosCompletosRealizados{
     int total;
 }pedidosCompletosRealizados[30];
 
-/*Validamos fechas*/
+/*Validamos fechas ingresadas por el cliente en reportes*/
 const char* ValidarFechas(char fecha_i[11], char fecha_f[11]){
     char consulta[200];
     char auxiliar[100];
@@ -87,7 +83,7 @@ const char* ValidarFechas(char fecha_i[11], char fecha_f[11]){
 }
 
 
-/*Buscamos el cliente, y retornamos el mensaje correspondiente*/
+/*Buscamos el pedido, y retornamos el mensaje correspondiente*/
 const char* MostrarPedidos(char fecha_i[11], char fecha_f[11]){
     char consulta[1020];
 	PGconn *conn;
@@ -102,6 +98,7 @@ const char* MostrarPedidos(char fecha_i[11], char fecha_f[11]){
 		if(resultado != NULL){
 			puts("\n-------------------------------------------\n");
 	        for (i = 0; i < PQntuples(resultado); i++){
+	            //Llenamos nuestro primer struct
 	            sprintf(pedidosCompletos[i].id,"%s",PQgetvalue(resultado,i,0));
 	            sprintf(pedidosCompletos[i].id,"%s",PQgetvalue(resultado,i,0));
                 sprintf(pedidosCompletos[i].descripcion,"%s",PQgetvalue(resultado,i,1));
@@ -124,6 +121,7 @@ const char* MostrarPedidos(char fecha_i[11], char fecha_f[11]){
 	PQfinish(conn);
 }
 
+//El pedido_despachado seleccionado esta con estatus pendiente o realizado?
 const char* DefinirEstatus(int id){
     char consulta[1020];
     char variable[11];
@@ -147,9 +145,11 @@ const char* DefinirEstatus(int id){
             sprintf(validarReporte,"\n\t\t\t*** NO EXISTEN REGISTROS EN ESE PEDIDO ***\n");
         }else if(PQntuples(resultado) > 0){
             if(strstr(variable,"pendiente")){
+                //Si esta pendiente solo llenamos un struct y mandamos validacion
                 ObtenerPedidoPendiente(id);
                 CabeceraReporte2(1);
             }else{
+                //De lo contrario, mandamos 2 y llenamos los dos struct.
                 ObtenerPedidoPendiente(id);
                 ObtenerPedidoRealizado(id);
                 CabeceraReporte2(2);
@@ -161,6 +161,7 @@ const char* DefinirEstatus(int id){
 	PQfinish(conn);
 }
 
+//Lleno el primer struct o retorno un error en una variable global de apoyo y guardamos numero de pocisiones
 const char* ObtenerPedidoPendiente(int id){
     char consulta[1020];
 	PGconn *conn;
@@ -196,6 +197,7 @@ const char* ObtenerPedidoPendiente(int id){
 	PQfinish(conn);
 }
 
+//Llenamos struct con la informacion requerida y guardamos numero de pocisiones
 const char* ObtenerPedidoRealizado(int id){
     char consulta[1020];
 	PGconn *conn;
@@ -228,6 +230,7 @@ const char* ObtenerPedidoRealizado(int id){
 	PQfinish(conn);
 }
 
+//Cabecera del reporte 2
 void CabeceraReporte2(int validar){
 	FILE *reporte;
 	time_t tiempo = time(0);
@@ -256,6 +259,7 @@ void CabeceraReporte2(int validar){
 	}
 }
 
+//Cuerpo del reporte 2
 void CuerpoReporte2(FILE *reporte,int validar){
 	fprintf(reporte,"\n    EL PEDIDO SELECCIONADO ESTÁ CON ESTATUS '%s'.\n",pedidosCompletosPendientes[0].estatus);
 	if(validar == 2){
@@ -291,6 +295,7 @@ void CuerpoReporte2(FILE *reporte,int validar){
 	    }
         fprintf(reporte,"\n\n--------------------------------------------------------------------------------\n");
         fprintf(reporte,"\n                             *** CONCLUSIÓN ***\n\n");
+        //El reporte fue satisfecho al 100%?
         if(contador == 0){
             fprintf(reporte,"\n            EL PEDIDO FUE DESPACHADO DE MANERA SATISFACTORIA\n");
         }else{
