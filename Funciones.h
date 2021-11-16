@@ -80,7 +80,7 @@ int Validar_Opcion(char opcion[10]){
 void VisualizarReporte(char cadena[30]){
 	char lectura;
 	FILE *reporte;
-    if((reporte = fopen("ReportePedidos.txt", "r")) == NULL){
+    if((reporte = fopen(cadena, "r")) == NULL){
         printf("\n\n\n\t\t*** EL REPORTE NO EXISTE ***\n");
     }else{
         reporte = fopen(cadena,"r");
